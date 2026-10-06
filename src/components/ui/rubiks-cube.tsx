@@ -450,61 +450,45 @@ export function RubiksCube3D({ className, autoStartSolve = true }: RubiksCubePro
         />
       </div>
 
-      {/* Controls & Status Bar */}
-      <div className="cube-ui text-center mt-5 z-10 w-full max-w-[280px]">
-        {/* Status Indicator */}
-        <div className="flex items-center justify-center gap-2 mb-3">
-          <Badge
-            variant={status.includes("Solved") ? "status" : "default"}
-            className="text-[11px] font-mono py-0.5 px-2.5 transition-colors"
-          >
-            {status.includes("Solved") ? (
-              <CheckCircle2 className="h-3 w-3 text-emerald-400" />
-            ) : (
-              <RotateCw className={`h-3 w-3 ${isBusy ? "animate-spin" : ""}`} />
-            )}
-            <span>{status}</span>
-          </Badge>
+      {/* Controls & Status Bar matching Image 1 */}
+      <div className="cube-ui text-center mt-6 z-10 w-full max-w-[320px]">
+        {/* Yellow Status */}
+        <div className="text-sm font-bold font-mono text-[#FFD500] drop-shadow-[0_0_10px_rgba(255,213,0,0.4)] mb-3 min-h-[1.5em] flex items-center justify-center gap-1.5">
+          <span>{status}</span>
         </div>
 
-        {/* Buttons */}
-        <div className="flex items-center justify-center gap-2 mb-2">
-          <Button
+        {/* Pill Buttons */}
+        <div className="flex items-center justify-center gap-3 mb-3">
+          <button
             type="button"
-            variant="secondary"
-            size="sm"
             disabled={isBusy}
             onClick={() => {
               stateRef.current.manualMode = true;
-              handleScramble(12, 180);
+              handleScramble(14, 180);
             }}
-            className="text-xs h-8 px-3.5 font-mono gap-1.5"
+            className="px-6 py-2 rounded-xl bg-white/[0.08] hover:bg-white/[0.14] border border-white/15 text-zinc-300 hover:text-white font-mono text-xs font-semibold transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-sm"
           >
-            <RotateCw className="h-3 w-3" />
-            <span>Scramble</span>
-          </Button>
+            Scramble
+          </button>
 
-          <Button
+          <button
             type="button"
-            variant="default"
-            size="sm"
             disabled={isBusy || historyCount === 0}
             onClick={() => {
               stateRef.current.manualMode = true;
               handleSolve(300);
             }}
-            className="text-xs h-8 px-3.5 font-mono gap-1.5 shadow-sm shadow-orange-500/20"
+            className="px-6 py-2 rounded-xl bg-amber-400/10 hover:bg-amber-400/20 border border-amber-400/35 text-amber-300 font-mono text-xs font-semibold transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-sm shadow-amber-500/10"
           >
-            <Play className="h-3 w-3 fill-current" />
-            <span>Solve ({historyCount})</span>
-          </Button>
+            Solve
+          </button>
         </div>
 
-        <p className="text-[10px] font-mono text-zinc-400 flex items-center justify-center gap-1">
-          <Move className="h-3 w-3" />
-          <span>Interactive 3D: Drag to rotate physics</span>
+        <p className="text-[11px] font-mono text-zinc-400 tracking-wide">
+          Drag to rotate &bull; buttons to scramble/solve
         </p>
       </div>
+
 
       <style>{`
         .fc-red    { background: #C41E3A; box-shadow: inset 0 -3px 0 rgba(0,0,0,.35), 0 0 10px rgba(196,30,58,.4); }

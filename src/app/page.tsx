@@ -5,7 +5,6 @@ import { motion, useScroll, useSpring } from "framer-motion";
 import { Navbar } from "@/components/common/Navbar";
 import { Footer } from "@/components/common/Footer";
 import { Preloader } from "@/components/ui/preloader";
-import { CustomCursor } from "@/components/ui/custom-cursor";
 import {
   Hero,
   About,
@@ -33,10 +32,7 @@ export default function Home() {
       {/* 1. Initial Site Load Animation */}
       <Preloader onComplete={() => setLoadingComplete(true)} />
 
-      {/* 2. Motion Follower Custom Cursor */}
-      <CustomCursor />
-
-      {/* 3. Top Scroll Progress Indicator Bar */}
+      {/* 2. Top Scroll Progress Indicator Bar */}
       <motion.div
         style={{ scaleX }}
         className="fixed top-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-orange-500 via-amber-500 to-red-500 origin-left z-[9990] pointer-events-none"

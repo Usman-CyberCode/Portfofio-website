@@ -4,13 +4,11 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, type Variants } from "framer-motion";
-import { ArrowRight, Send, Terminal, Sparkles, GraduationCap } from "lucide-react";
-import { CursorParticles } from "@/components/ui/cursor-particles";
+import { ArrowRight, Send, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { GithubIcon, LinkedInIcon } from "@/components/ui/Icons";
-import { MorphText } from "@/components/ui/morph-text";
-import { BorderBeam } from "@/components/ui/border-beam";
+import { WovenCanvas } from "@/components/ui/woven-light-hero";
 import { personalData } from "@/data";
 import { fadeInUp } from "@/animations/motion";
 
@@ -48,36 +46,64 @@ export function Hero() {
   const heroTechStack = ["C++", "JavaScript", "TypeScript", "Redux", "HTML/CSS"];
 
   return (
-    <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-black px-4 sm:px-6 lg:px-8 pt-28 pb-16">
-      {/* 1. Interactive Cursor Particles Layer (preserves existing CursorParticles component exactly) */}
-      <CursorParticles
-        particleCount={15}
-        particleColor="#ef4444"
-        backgroundColor="#000000"
-        className="absolute inset-0 z-0 pointer-events-none"
-      />
+    <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-[#08080a] px-4 sm:px-6 lg:px-8 pt-32 pb-20">
+      {/* 1. Three.js Woven Light Particles Canvas (Reacts dynamically to cursor movement with 3D physics) */}
+      <WovenCanvas className="absolute inset-0 z-0 pointer-events-none opacity-55" />
 
-      {/* 2. Subtle Ambient Glows Layer */}
+      {/* 2. Atmospheric Depth Glow (Behind content) */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute top-1/4 left-1/3 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[340px] bg-gradient-to-tr from-orange-600/12 via-red-600/8 to-transparent blur-3xl rounded-full"
+        className="pointer-events-none absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[340px] bg-gradient-to-tr from-orange-600/10 via-amber-600/6 to-transparent blur-3xl rounded-full"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute bottom-12 right-1/4 w-80 h-80 bg-orange-600/6 blur-[120px] rounded-full"
+        className="pointer-events-none absolute bottom-12 right-1/4 w-80 h-80 bg-red-600/5 blur-[120px] rounded-full"
       />
 
-      {/* 3. Hero Content Grid */}
+      {/* 3. Hero Content Grid with HD Photo on Left & Content on Right */}
       <div className="relative z-10 max-w-6xl mx-auto w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
-          {/* Left Column: Developer Headline & Introduction */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+          
+          {/* Left Column: HD Portrait Photo with Pure Borderless CSS */}
+          <motion.div
+            variants={fadeInUp}
+            initial="hidden"
+            animate="visible"
+            className="lg:col-span-5 flex justify-center lg:justify-start w-full order-1"
+          >
+            <div className="relative w-full max-w-[320px] sm:max-w-[370px] group">
+              {/* Soft Ambient Warm Glow behind the photo */}
+              <div
+                aria-hidden="true"
+                className="absolute -inset-4 rounded-3xl bg-gradient-to-tr from-orange-500/20 via-amber-500/10 to-red-500/10 blur-2xl opacity-75 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+              />
+
+              {/* Completely Borderless HD Image with smooth rounded corners and shadow */}
+              <div className="relative w-full aspect-[3/4] sm:aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl shadow-black/90">
+                <Image
+                  src="/images/profile.jpg"
+                  alt={personalData.name}
+                  fill
+                  priority
+                  quality={100}
+                  unoptimized
+                  className="object-cover object-top filter contrast-[1.03] brightness-[1.0] group-hover:scale-[1.02] transition-transform duration-500"
+                />
+
+                {/* Subtle Cinematic Bottom Fade */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#08080a]/75 via-transparent to-transparent pointer-events-none" />
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Right Column: Developer Headline, Bio & Action Buttons */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left"
+            className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left order-2"
           >
-            {/* Status Badge without any city tag */}
+            {/* Status Badge */}
             <motion.div
               variants={itemVariants}
               className="mb-5 flex flex-wrap items-center justify-center lg:justify-start gap-2.5"
@@ -102,33 +128,22 @@ export function Hero() {
             {/* Name Heading */}
             <motion.h1
               variants={itemVariants}
-              className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-[1.1] mb-2"
+              className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-[1.08] mb-3"
             >
-              Hi, I&apos;m <span className="text-white">{personalData.name}</span>
+              Hi, I&apos;m {personalData.name}
             </motion.h1>
 
-            {/* Morphing Professional Title */}
-            <motion.div
-              variants={itemVariants}
-              className="w-full flex justify-center lg:justify-start my-2 min-h-[52px]"
-            >
-              <MorphText
-                words={[
-                  "PROBLEM SOLVER IN C++",
-                  "WEB DEVELOPER",
-                  "BSCS UNDERGRADUATE",
-                  "ALGORITHM ENTHUSIAST",
-                ]}
-                fontSize="clamp(1.4rem, 3.5vw, 2.4rem)"
-                className="items-center lg:items-start"
-                textClassName="text-gradient-fire font-bold tracking-tight"
-              />
+            {/* Professional Title */}
+            <motion.div variants={itemVariants} className="mb-4">
+              <span className="text-xl sm:text-2xl md:text-3xl font-semibold text-zinc-200 tracking-tight block">
+                Web Developer <span className="text-zinc-500 mx-1.5">&bull;</span> Problem Solver in C++
+              </span>
             </motion.div>
 
             {/* Professional Introduction Paragraph */}
             <motion.p
               variants={itemVariants}
-              className="text-xs sm:text-sm md:text-base text-zinc-300 max-w-xl mb-6 leading-relaxed font-normal"
+              className="text-sm sm:text-base text-zinc-300 max-w-xl mb-6 leading-relaxed font-normal"
             >
               {personalData.shortBio}
             </motion.p>
@@ -214,58 +229,6 @@ export function Hero() {
             </motion.div>
           </motion.div>
 
-          {/* Right Column: User Portrait Photo with BorderBeam & Status Details */}
-          <motion.div
-            variants={fadeInUp}
-            initial="hidden"
-            animate="visible"
-            className="lg:col-span-5 flex justify-center w-full"
-          >
-            <div className="relative rounded-2xl developer-panel p-3.5 sm:p-4 w-full max-w-[340px] sm:max-w-[370px] overflow-hidden group shadow-2xl shadow-black/60">
-              {/* BorderBeam Animated Laser Outline */}
-              <BorderBeam
-                size={180}
-                duration={10}
-                colorFrom="#ff7a18"
-                colorTo="#ef4444"
-              />
-
-              {/* Photo Frame Container */}
-              <div className="relative w-full aspect-[4/5] rounded-xl overflow-hidden border border-white/10 bg-zinc-950">
-                <Image
-                  src="/images/profile.png"
-                  alt={personalData.name}
-                  fill
-                  priority
-                  className="object-cover object-top filter brightness-[0.98] contrast-[1.03] group-hover:scale-[1.03] transition-transform duration-500"
-                />
-
-                {/* Subtle Image Gradient Vignette */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
-
-                {/* Floating Bottom Card Over Picture */}
-                <div className="absolute bottom-3 left-3 right-3 p-3 rounded-lg bg-black/70 backdrop-blur-md border border-white/15">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-xs font-bold text-white tracking-tight">
-                        {personalData.name}
-                      </h4>
-                      <p className="text-[10px] font-mono text-orange-400">
-                        Web Developer &bull; C++ Solver
-                      </p>
-                    </div>
-                    <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34d399]" />
-                  </div>
-                </div>
-              </div>
-
-              {/* Technical Caption Bar */}
-              <div className="pt-3 px-1 flex items-center justify-between text-[11px] font-mono text-zinc-400">
-                <span>BSCS Undergrad</span>
-                <span className="text-zinc-500">UAF Faisalabad</span>
-              </div>
-            </div>
-          </motion.div>
         </div>
       </div>
     </section>
