@@ -111,6 +111,16 @@
   border-color: rgba(249, 115, 22, 0.3);
 }
 
+@keyframes border-beam {
+  100% {
+    offset-distance: 100%;
+  }
+}
+
+.animate-border-beam {
+  animation: border-beam calc(var(--duration)*1s) infinite linear;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
@@ -119,3 +129,4 @@
     scroll-behavior: auto !important;
   }
 }
+

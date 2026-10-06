@@ -17,7 +17,7 @@ export const personalData: PersonalData = {
     "Motivated and detail-oriented BSCS student with a strong interest in Web Development and Problem Solving using C++. Experienced in front-end web technologies and programming fundamentals, actively seeking a Web Development Internship to contribute to real-world projects.",
   careerObjective:
     "I am a motivated and detail-oriented BSCS student with a strong interest in Web Development and Problem Solving using C++. I have experience with front-end web technologies and programming fundamentals. I am seeking a Web Development Internship where I can enhance my practical skills and contribute to real-world projects in a professional environment.",
-  location: "Safdarabad, District Sheikhupura, Punjab, Pakistan",
+  location: "Pakistan",
   email: "theycallmerut@gmail.com",
   socialLinks: [
     {

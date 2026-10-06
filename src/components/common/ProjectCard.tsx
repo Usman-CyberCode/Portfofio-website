@@ -2,10 +2,11 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { ExternalLink, Terminal, FolderGit2, ArrowUpRight, Clock } from "lucide-react";
+import { ExternalLink, FolderGit2, ArrowUpRight, Clock } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { GithubIcon } from "@/components/ui/Icons";
+import { BorderBeam } from "@/components/ui/border-beam";
 import { Project } from "@/types";
 
 interface ProjectCardProps {
@@ -29,8 +30,18 @@ export function ProjectCard({ project }: ProjectCardProps) {
     <motion.div
       whileHover={{ y: -3 }}
       transition={{ duration: 0.2, ease: "easeOut" }}
-      className="developer-panel rounded-2xl h-full flex flex-col justify-between group p-6 transition-colors duration-200 hover:border-orange-500/40"
+      className="developer-panel relative rounded-2xl h-full flex flex-col justify-between group p-6 transition-colors duration-200 hover:border-orange-500/40 overflow-hidden"
     >
+      {/* Featured Border Beam Effect */}
+      {project.featured && (
+        <BorderBeam
+          size={160}
+          duration={12}
+          colorFrom="#ff7a18"
+          colorTo="#ef4444"
+        />
+      )}
+
       <div>
         {/* Terminal Header Mockup */}
         <div className="rounded-xl overflow-hidden mb-5 border border-white/[0.08] bg-[#09090d]">

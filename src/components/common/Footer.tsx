@@ -95,8 +95,9 @@ export function Footer() {
             &copy; {new Date().getFullYear()} {personalData.name}. All rights reserved.
           </p>
           <p>
-            Safdarabad, Punjab, Pakistan &bull; BSCS 5th Semester
+            Pakistan &bull; BSCS 5th Semester
           </p>
+
         </div>
       </div>
     </footer>
