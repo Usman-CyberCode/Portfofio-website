@@ -135,15 +135,15 @@ export const WovenCanvas = ({ className = "absolute inset-0 z-0 pointer-events-n
     const mouse = new THREE.Vector2(-999, -999);
     const clock = new THREE.Clock();
 
-    // --- Woven Silk Particles ---
-    const particleCount = 28000;
+    // --- Woven Silk Particles (Optimized for smooth 60-120 FPS performance) ---
+    const particleCount = 4200;
     const positions = new Float32Array(particleCount * 3);
     const originalPositions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
     const velocities = new Float32Array(particleCount * 3);
 
     const geometry = new THREE.BufferGeometry();
-    const torusKnot = new THREE.TorusKnotGeometry(1.6, 0.45, 180, 28);
+    const torusKnot = new THREE.TorusKnotGeometry(1.6, 0.45, 120, 24);
 
     for (let i = 0; i < particleCount; i++) {
       const vertexIndex = i % torusKnot.attributes.position.count;
@@ -177,7 +177,7 @@ export const WovenCanvas = ({ className = "absolute inset-0 z-0 pointer-events-n
     geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
     const material = new THREE.PointsMaterial({
-      size: 0.022,
+      size: 0.038,
       vertexColors: true,
       blending: THREE.AdditiveBlending,
       transparent: true,

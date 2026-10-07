@@ -38,7 +38,7 @@ export function Footer() {
           </div>
 
           {/* Contact & Social Links */}
-          <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-zinc-400">
+          <div className="pt-7 flex flex-wrap items-center gap-4 text-xs font-mono text-zinc-400">
             <a
               href={`mailto:${personalData.email}`}
               className="text-zinc-300 hover:text-white transition-colors"
@@ -77,16 +77,28 @@ export function Footer() {
             )}
           </div>
 
+
           {/* Back to top */}
           <button
             onClick={scrollToTop}
             type="button"
-            className="flex items-center gap-1.5 text-xs font-mono text-zinc-400 hover:text-white p-2 rounded-lg border border-white/10 hover:border-orange-500/40 bg-white/[0.02] transition-colors cursor-pointer"
+            className=" flex items-center gap-1.5 text-xs font-mono text-zinc-400 hover:text-white p-2 rounded-lg border border-white/10 hover:border-orange-500/40 bg-white/[0.02] transition-colors cursor-pointer"
             aria-label="Scroll back to top"
+
           >
             <span>Top</span>
-            <ArrowUp className="h-3.5 w-3.5 text-orange-400" />
+            <ArrowUp className=" h-3.5 w-3.5 text-orange-400" />
           </button>
+        </div>
+
+
+        <div
+          aria-hidden="true"
+          className="absolute top-6 left-6 lg:left-14 select-none pointer-events-none z-[1] opacity-15 overflow-hidden"
+        >
+          <div className="text-hollow-lg text-7xl sm:text-8xl md:text-9xl lg:text-[90px] font-black tracking-tighter leading-none block" >
+            MUHAMMAD USMAN TAHIR
+          </div>
         </div>
 
         {/* Bottom Bar */}

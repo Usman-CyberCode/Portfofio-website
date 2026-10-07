@@ -15,6 +15,7 @@ import { SectionHeader } from "@/components/common/SectionHeader";
 import { Badge } from "@/components/ui/Badge";
 import { skillCategories } from "@/data";
 import { fadeInUp, staggerContainer } from "@/animations/motion";
+import { CosmicParallaxBg } from "@/components/ui/parallax-cosmic-background";
 
 const categoryIcons: Record<string, React.ElementType> = {
   Programming: Code2,
@@ -35,13 +36,28 @@ export function Skills() {
       : skillCategories.filter((c) => c.title === selectedCategory);
 
   return (
-    <section id="skills" className="py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto relative">
-      <SectionHeader
-        badgeText="Technical Skills"
-        title="Categorized Competencies &"
-        titleHighlight="Core Tooling"
-        description="Structured into programming languages, state management, web standards, developer tools, and fundamental computer science topics."
-      />
+    <section id="skills" className="py-28 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* 1. Animated Cosmic Parallax Starfield & Ambient Glow Background */}
+      <CosmicParallaxBg className="opacity-40" />
+
+      {/* 2. Soft Dynamic Ambient Light Meshes */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <div className="absolute top-1/4 -left-20 w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-orange-600/10 via-amber-500/5 to-transparent blur-3xl animate-ambient-drift" />
+        <div className="absolute bottom-10 -right-20 w-[600px] h-[550px] rounded-full bg-gradient-to-bl from-red-600/10 via-orange-500/5 to-transparent blur-3xl animate-ambient-drift [animation-delay:4s]" />
+        
+        {/* Hollow Watermark Text Accent */}
+        <div className="absolute top-12 right-6 lg:right-16 text-hollow-lg text-7xl sm:text-8xl md:text-9xl font-black select-none opacity-10">
+          SKILLS
+        </div>
+      </div>
+
+      <div className="max-w-6xl mx-auto relative z-10">
+        <SectionHeader
+          badgeText="Technical Skills"
+          title="Categorized Competencies &"
+          titleHighlight="Core Tooling"
+          description="Structured into programming languages, state management, web standards, developer tools, and fundamental computer science topics."
+        />
 
       {/* Category Filter Pills */}
       <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
@@ -145,6 +161,7 @@ export function Skills() {
           })}
         </AnimatePresence>
       </motion.div>
+      </div>
     </section>
   );
 }

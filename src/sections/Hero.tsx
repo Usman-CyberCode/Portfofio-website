@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { GithubIcon, LinkedInIcon } from "@/components/ui/Icons";
 import { WovenCanvas } from "@/components/ui/woven-light-hero";
+import { CursorParticles } from "@/components/ui/cursor-particles";
 import { personalData } from "@/data";
 import { fadeInUp } from "@/animations/motion";
 
@@ -17,14 +18,14 @@ const containerVariants: Variants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.08,
       delayChildren: 0.1,
     },
   },
 };
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 18 },
+  hidden: { opacity: 0, y: 16 },
   visible: {
     opacity: 1,
     y: 0,
@@ -46,25 +47,38 @@ export function Hero() {
   const heroTechStack = ["C++", "JavaScript", "TypeScript", "Redux", "HTML/CSS"];
 
   return (
-    <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden bg-[#08080a] px-4 sm:px-6 lg:px-8 pt-32 pb-20">
-      {/* 1. Three.js Woven Light Particles Canvas (Reacts dynamically to cursor movement with 3D physics) */}
-      <WovenCanvas className="absolute inset-0 z-0 pointer-events-none opacity-55" />
+    <section className="relative min-h-[95vh] flex flex-col justify-center overflow-hidden bg-[#08080a] px-4 sm:px-6 lg:px-8 pt-32 pb-20">
 
-      {/* 2. Atmospheric Depth Glow (Behind content) */}
+      {/* 2. Motion Particles Canvas shifted slightly to the right side directly behind the text (Reference 3) */}
+      <div className="absolute top-10 right-0 bottom-0 w-full lg:w-[60vw] max-w-[650px] z-0 pointer-events-none  opacity-60 translate-x-6 sm:translate-x-12">
+        <WovenCanvas className="w-full h-full pointer-events-none" />
+      </div>
+
+      {/* 3. Atmospheric Depth Glow */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[340px] bg-gradient-to-tr from-orange-600/10 via-amber-600/6 to-transparent blur-3xl rounded-full"
+        className="pointer-events-none absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[340px] bg-gradient-to-tr from-orange-600/10 via-amber-600/6 to-transparent blur-3xl rounded-full"
       />
       <div
         aria-hidden="true"
         className="pointer-events-none absolute bottom-12 right-1/4 w-80 h-80 bg-red-600/5 blur-[120px] rounded-full"
       />
 
-      {/* 3. Hero Content Grid with HD Photo on Left & Content on Right */}
-      <div className="relative z-10 max-w-6xl mx-auto w-full">
+      {/* 4. Hollow Text Watermark in Hero Background */}
+      <div
+        aria-hidden="true"
+        className="absolute top-16 left-6 lg:left-14 select-none pointer-events-none z-[1] opacity-15 overflow-hidden"
+      >
+        <div className="text-hollow-lg text-7xl sm:text-8xl md:text-9xl lg:text-[140px] font-black tracking-tighter leading-none block">
+          DEVELOPER
+        </div>
+      </div>
+
+      {/* 5. Main Hero Grid: Left Portrait Photo & Right Bio matching Reference 3 */}
+      <div className=" pt-15 relative z-10 max-w-6xl mx-auto w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
-          
-          {/* Left Column: HD Portrait Photo with Pure Borderless CSS */}
+
+          {/* Left Column: HD Portrait Photo with Pure Borderless CSS matching Reference 3 */}
           <motion.div
             variants={fadeInUp}
             initial="hidden"
@@ -96,7 +110,7 @@ export function Hero() {
             </div>
           </motion.div>
 
-          {/* Right Column: Developer Headline, Bio & Action Buttons */}
+          {/* Right Column: Developer Headline, Bio & Action Buttons matching Reference 3 */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -106,7 +120,7 @@ export function Hero() {
             {/* Status Badge */}
             <motion.div
               variants={itemVariants}
-              className="mb-5 flex flex-wrap items-center justify-center lg:justify-start gap-2.5"
+              className="mb-4 flex flex-wrap items-center justify-center lg:justify-start gap-2.5"
             >
               <Badge
                 variant="status"
@@ -130,13 +144,18 @@ export function Hero() {
               variants={itemVariants}
               className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-[1.08] mb-3"
             >
-              Hi, I&apos;m {personalData.name}
+              Hi, I&apos;m{" "}
+              <span className="text-white">Muhammad Usman Tahir</span>
             </motion.h1>
 
-            {/* Professional Title */}
-            <motion.div variants={itemVariants} className="mb-4">
-              <span className="text-xl sm:text-2xl md:text-3xl font-semibold text-zinc-200 tracking-tight block">
-                Web Developer <span className="text-zinc-500 mx-1.5">&bull;</span> Problem Solver in C++
+            {/* Professional Title with Hollow Text Accent */}
+            <motion.div variants={itemVariants} className="mb-4 flex flex-wrap items-center gap-2 justify-center lg:justify-start">
+              <span className="text-xl sm:text-2xl md:text-3xl font-semibold text-zinc-200 tracking-tight">
+                Web Developer
+              </span>
+              <span className="text-zinc-500 mx-1">&bull;</span>
+              <span className="text-xl sm:text-2xl md:text-3xl font-semibold text-hollow-accent">
+                Problem Solver in C++
               </span>
             </motion.div>
 
@@ -166,16 +185,16 @@ export function Hero() {
               ))}
             </motion.div>
 
-            {/* CTA Buttons */}
+            {/* CTA Buttons (High z-index to guarantee clickability) */}
             <motion.div
               variants={itemVariants}
-              className="flex flex-wrap items-center justify-center lg:justify-start gap-3 w-full sm:w-auto mb-8"
+              className="relative z-20 flex flex-wrap items-center justify-center lg:justify-start gap-3 w-full sm:w-auto mb-8"
             >
               <Link href="#projects">
                 <Button
                   size="lg"
                   variant="default"
-                  className="w-full sm:w-auto text-xs sm:text-sm font-medium shadow-md shadow-orange-500/25 group font-mono"
+                  className="w-full sm:w-auto text-xs sm:text-sm font-medium shadow-md shadow-orange-500/25 group font-mono cursor-pointer"
                 >
                   <span>View Projects</span>
                   <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
@@ -186,7 +205,7 @@ export function Hero() {
                 <Button
                   size="lg"
                   variant="secondary"
-                  className="w-full sm:w-auto text-xs sm:text-sm font-medium font-mono"
+                  className="w-full sm:w-auto text-xs sm:text-sm font-medium font-mono cursor-pointer"
                 >
                   <Send className="h-3.5 w-3.5 text-orange-400" />
                   <span>Contact Me</span>
@@ -197,7 +216,7 @@ export function Hero() {
             {/* Social Links Row */}
             <motion.div
               variants={itemVariants}
-              className="flex items-center gap-2.5 text-xs text-zinc-400 font-mono"
+              className="relative z-20 flex items-center gap-2.5 text-xs text-zinc-400 font-mono"
             >
               <span className="text-zinc-500 uppercase tracking-widest text-[11px] mr-1">
                 Profiles:
@@ -208,7 +227,7 @@ export function Hero() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={githubLink.label}
-                  className="p-2 rounded-lg border border-white/10 bg-white/[0.03] text-zinc-300 hover:text-white hover:border-orange-500/40 hover:bg-orange-500/10 transition-all duration-150 flex items-center gap-1.5"
+                  className="p-2 rounded-lg border border-white/10 bg-white/[0.03] text-zinc-300 hover:text-white hover:border-orange-500/40 hover:bg-orange-500/10 transition-all duration-150 flex items-center gap-1.5 cursor-pointer"
                 >
                   <GithubIcon className="h-4 w-4" />
                   <span className="text-xs">GitHub</span>
@@ -220,7 +239,7 @@ export function Hero() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={linkedinLink.label}
-                  className="p-2 rounded-lg border border-white/10 bg-white/[0.03] text-zinc-300 hover:text-white hover:border-orange-500/40 hover:bg-orange-500/10 transition-all duration-150 flex items-center gap-1.5"
+                  className="p-2 rounded-lg border border-white/10 bg-white/[0.03] text-zinc-300 hover:text-white hover:border-orange-500/40 hover:bg-orange-500/10 transition-all duration-150 flex items-center gap-1.5 cursor-pointer"
                 >
                   <LinkedInIcon className="h-4 w-4 text-[#0a66c2]" />
                   <span className="text-xs">LinkedIn</span>
@@ -234,3 +253,5 @@ export function Hero() {
     </section>
   );
 }
+
+export default Hero;
