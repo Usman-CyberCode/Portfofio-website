@@ -17,6 +17,7 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { personalData, educationData, trainingData } from "@/data";
 import { fadeInUp, staggerContainer } from "@/animations/motion";
+import { PakistanNetworkGlobe } from "@/components/portfolio/pakistan-network-globe";
 
 export function About() {
   const primaryEdu = educationData[0];
@@ -198,6 +199,17 @@ export function About() {
             </div>
           </div>
         </motion.div>
+      </motion.div>
+
+      {/* Origin & Global Mindset Visualization (PakistanNetworkGlobe) */}
+      <motion.div
+        variants={fadeInUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-60px" }}
+        className="mt-12"
+      >
+        <PakistanNetworkGlobe />
       </motion.div>
     </section>
   );

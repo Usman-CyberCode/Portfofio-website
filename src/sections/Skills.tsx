@@ -35,16 +35,32 @@ export function Skills() {
       : skillCategories.filter((c) => c.title === selectedCategory);
 
   return (
-    <section id="skills" className="py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto relative">
-      <SectionHeader
-        badgeText="Technical Skills"
-        title="Categorized Competencies &"
-        titleHighlight="Core Tooling"
-        description="Structured into programming languages, state management, web standards, developer tools, and fundamental computer science topics."
-      />
+    <section id="skills" className="py-28 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* 1. Dynamic Animated Motion Background (Not pure flat black) */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        {/* Soft Radial Ambient Meshes with Drift Animation */}
+        <div className="absolute top-1/4 -left-20 w-[500px] h-[500px] rounded-full bg-gradient-to-tr from-orange-600/10 via-amber-500/5 to-transparent blur-3xl animate-ambient-drift" />
+        <div className="absolute bottom-10 -right-20 w-[600px] h-[550px] rounded-full bg-gradient-to-bl from-red-600/10 via-orange-500/5 to-transparent blur-3xl animate-ambient-drift [animation-delay:4s]" />
+        
+        {/* Dynamic Animated Grid Pattern */}
+        <div className="absolute inset-0 bg-grid-pattern opacity-40 animate-grid-pulse" />
+        
+        {/* Hollow Watermark Text */}
+        <div className="absolute top-12 right-6 lg:right-16 text-hollow-lg text-7xl sm:text-8xl md:text-9xl font-black select-none opacity-10">
+          SKILLS
+        </div>
+      </div>
 
-      {/* Category Filter Pills */}
-      <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
+      <div className="max-w-6xl mx-auto relative z-10">
+        <SectionHeader
+          badgeText="Technical Skills"
+          title="Categorized Competencies &"
+          titleHighlight="Core Tooling"
+          description="Structured into programming languages, state management, web standards, developer tools, and fundamental computer science topics."
+        />
+
+        {/* Category Filter Pills */}
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
         {categories.map((cat) => {
           const isSelected = selectedCategory === cat;
           return (
@@ -145,6 +161,7 @@ export function Skills() {
           })}
         </AnimatePresence>
       </motion.div>
+      </div>
     </section>
   );
 }
