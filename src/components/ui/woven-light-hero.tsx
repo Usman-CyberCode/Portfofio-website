@@ -135,21 +135,21 @@ export const WovenCanvas = ({ className = "absolute inset-0 z-0 pointer-events-n
     const mouse = new THREE.Vector2(-999, -999);
     const clock = new THREE.Clock();
 
-    // --- Woven Silk Particles (Optimized for smooth 60-120 FPS performance) ---
-    const particleCount = 4200;
+    // --- Woven Silk Particles (Zero-GC 60-120 FPS high performance loop) ---
+    const particleCount = 2600;
     const positions = new Float32Array(particleCount * 3);
     const originalPositions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
     const velocities = new Float32Array(particleCount * 3);
 
     const geometry = new THREE.BufferGeometry();
-    const torusKnot = new THREE.TorusKnotGeometry(1.6, 0.45, 120, 24);
+    const torusKnot = new THREE.TorusKnotGeometry(1.6, 0.45, 100, 20);
 
     for (let i = 0; i < particleCount; i++) {
       const vertexIndex = i % torusKnot.attributes.position.count;
-      const x = torusKnot.attributes.position.getX(vertexIndex) + (Math.random() - 0.5) * 0.1;
-      const y = torusKnot.attributes.position.getY(vertexIndex) + (Math.random() - 0.5) * 0.1;
-      const z = torusKnot.attributes.position.getZ(vertexIndex) + (Math.random() - 0.5) * 0.1;
+      const x = torusKnot.attributes.position.getX(vertexIndex) + (Math.random() - 0.5) * 0.12;
+      const y = torusKnot.attributes.position.getY(vertexIndex) + (Math.random() - 0.5) * 0.12;
+      const z = torusKnot.attributes.position.getZ(vertexIndex) + (Math.random() - 0.5) * 0.12;
 
       positions[i * 3] = x;
       positions[i * 3 + 1] = y;
@@ -177,7 +177,7 @@ export const WovenCanvas = ({ className = "absolute inset-0 z-0 pointer-events-n
     geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
     const material = new THREE.PointsMaterial({
-      size: 0.038,
+      size: 0.042,
       vertexColors: true,
       blending: THREE.AdditiveBlending,
       transparent: true,
@@ -198,46 +198,63 @@ export const WovenCanvas = ({ className = "absolute inset-0 z-0 pointer-events-n
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
-      const elapsedTime = clock.getElapsedTime();
 
-      const mouseWorld = new THREE.Vector3(mouse.x * 4, mouse.y * 4, 0);
+      // Skip CPU/GPU workload when page is backgrounded
+      if (document.hidden) return;
+
+      const elapsedTime = clock.getElapsedTime();
+      const mouseWorldX = mouse.x * 4;
+      const mouseWorldY = mouse.y * 4;
 
       for (let i = 0; i < particleCount; i++) {
         const ix = i * 3;
-        const iy = i * 3 + 1;
-        const iz = i * 3 + 2;
+        const iy = ix + 1;
+        const iz = ix + 2;
 
-        const currentPos = new THREE.Vector3(positions[ix], positions[iy], positions[iz]);
-        const originalPos = new THREE.Vector3(
-          originalPositions[ix],
-          originalPositions[iy],
-          originalPositions[iz]
-        );
-        const velocity = new THREE.Vector3(velocities[ix], velocities[iy], velocities[iz]);
+        const px = positions[ix];
+        const py = positions[iy];
+        const pz = positions[iz];
 
-        const dist = currentPos.distanceTo(mouseWorld);
-        if (dist < 1.6) {
+        const ox = originalPositions[ix];
+        const oy = originalPositions[iy];
+        const oz = originalPositions[iz];
+
+        let vx = velocities[ix];
+        let vy = velocities[iy];
+        let vz = velocities[iz];
+
+        // Interaction repulsion without vector allocations
+        const dx = px - mouseWorldX;
+        const dy = py - mouseWorldY;
+        const dz = pz;
+        const distSq = dx * dx + dy * dy + dz * dz;
+
+        if (distSq < 2.56 && distSq > 0.0001) {
+          const dist = Math.sqrt(distSq);
           const force = (1.6 - dist) * 0.015;
-          const direction = new THREE.Vector3().subVectors(currentPos, mouseWorld).normalize();
-          velocity.add(direction.multiplyScalar(force));
+          const invDist = 1 / dist;
+          vx += dx * invDist * force;
+          vy += dy * invDist * force;
+          vz += dz * invDist * force;
         }
 
-        // Return to original position
-        const returnForce = new THREE.Vector3()
-          .subVectors(originalPos, currentPos)
-          .multiplyScalar(0.0012);
-        velocity.add(returnForce);
+        // Return to original anchor point
+        vx += (ox - px) * 0.0012;
+        vy += (oy - py) * 0.0012;
+        vz += (oz - pz) * 0.0012;
 
-        // Damping
-        velocity.multiplyScalar(0.95);
+        // Friction damping
+        vx *= 0.95;
+        vy *= 0.95;
+        vz *= 0.95;
 
-        positions[ix] += velocity.x;
-        positions[iy] += velocity.y;
-        positions[iz] += velocity.z;
+        positions[ix] = px + vx;
+        positions[iy] = py + vy;
+        positions[iz] = pz + vz;
 
-        velocities[ix] = velocity.x;
-        velocities[iy] = velocity.y;
-        velocities[iz] = velocity.z;
+        velocities[ix] = vx;
+        velocities[iy] = vy;
+        velocities[iz] = vz;
       }
       geometry.attributes.position.needsUpdate = true;
 

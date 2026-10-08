@@ -216,7 +216,7 @@ export function TechnologyStack3D() {
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative w-full max-w-[540px] mx-auto py-4 select-none perspective-1200"
+      className="relative w-full max-w-[540px] mx-auto py-4 select-none perspective-1200 px-2 sm:px-0"
       aria-label="Interactive 3D Mechanical Technology Keyboard"
     >
       {/* Soft warm shadow below entire keyboard */}
@@ -245,23 +245,23 @@ export function TechnologyStack3D() {
                 },
               }
         }
-        className="relative rounded-[28px] p-5 sm:p-6 bg-gradient-to-b from-[#d5d7de] via-[#c6c8d0] to-[#a3a6b2] border border-white/60 shadow-[0_35px_70px_-15px_rgba(0,0,0,0.85),inset_0_2px_4px_rgba(255,255,255,0.8)]"
+        className="relative rounded-[22px] sm:rounded-[28px] p-3 sm:p-6 bg-gradient-to-b from-[#d5d7de] via-[#c6c8d0] to-[#a3a6b2] border border-white/60 shadow-[0_35px_70px_-15px_rgba(0,0,0,0.85),inset_0_2px_4px_rgba(255,255,255,0.8)]"
       >
         {/* Physical 3D Chassis Base Lip (Extrusion depth matching Reference 1) */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 -bottom-4 h-6 rounded-b-[28px] bg-gradient-to-b from-[#7e8291] to-[#484b55] shadow-2xl"
+          className="pointer-events-none absolute inset-x-0 -bottom-4 h-6 rounded-b-[22px] sm:rounded-b-[28px] bg-gradient-to-b from-[#7e8291] to-[#484b55] shadow-2xl"
           style={{ transform: "translateZ(-15px)" }}
         />
 
         {/* Recessed Keyplate Area */}
         <div
-          className="relative rounded-2xl p-3 sm:p-4 bg-gradient-to-b from-[#b8bac4] to-[#a8abb6] shadow-[inset_0_4px_12px_rgba(0,0,0,0.25)] border border-black/10"
+          className="relative rounded-xl sm:rounded-2xl p-2 sm:p-4 bg-gradient-to-b from-[#b8bac4] to-[#a8abb6] shadow-[inset_0_4px_12px_rgba(0,0,0,0.25)] border border-black/10"
           style={{ transformStyle: "preserve-3d" }}
         >
           {/* Keycaps Grid: 3 rows x 5 columns */}
           <div
-            className="grid grid-cols-5 gap-2 sm:gap-2.5"
+            className="grid grid-cols-5 gap-1.5 sm:gap-2.5"
             style={{ transformStyle: "preserve-3d" }}
           >
             {KEYCAP_DATA.map((key) => {
@@ -280,7 +280,7 @@ export function TechnologyStack3D() {
                   onMouseUp={() => setPressedKey(null)}
                   whileHover={reducedMotion ? {} : { y: -4, scale: 1.02 }}
                   whileTap={{ y: 3, scale: 0.98 }}
-                  className={`group relative aspect-[1/1.05] rounded-xl flex flex-col items-center justify-between p-1.5 sm:p-2 cursor-pointer transition-shadow duration-150 transform-style-3d ${
+                  className={`group relative aspect-[1/1.05] rounded-lg sm:rounded-xl flex flex-col items-center justify-between p-1 sm:p-2 cursor-pointer transition-shadow duration-150 transform-style-3d ${
                     isPeach
                       ? "bg-gradient-to-b from-[#ffb494] via-[#ffa07a] to-[#f47a46] text-white border-t border-white/80"
                       : "bg-gradient-to-b from-[#ffffff] via-[#f7f7fa] to-[#e6e7ec] text-zinc-800 border-t border-white"

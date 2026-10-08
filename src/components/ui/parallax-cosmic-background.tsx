@@ -64,9 +64,9 @@ const CosmicParallaxBg: React.FC<CosmicParallaxBgProps> = ({
 
   useEffect(() => {
     // Generate star shadows when component mounts
-    setSmallStars(generateStarBoxShadow(500));
-    setMediumStars(generateStarBoxShadow(150));
-    setBigStars(generateStarBoxShadow(60));
+    setSmallStars(generateStarBoxShadow(180));
+    setMediumStars(generateStarBoxShadow(60));
+    setBigStars(generateStarBoxShadow(24));
 
     // Set animation iteration based on loop prop
     document.documentElement.style.setProperty(

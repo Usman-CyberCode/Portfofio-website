@@ -51,9 +51,19 @@ export default function Home() {
       {/* 5. Main Navigation */}
       <Navbar />
 
-      {/* 6. Main Application Content Sections */}
-      <main className="min-h-screen bg-[#08080a]/80 backdrop-blur-[0.5px] overflow-hidden relative z-10">
-        {/* Hero Section with Muhammad Usman Tahir portrait & MorphText */}
+      {/* 6. Main Application Content Sections with 3D Cinematic Entrance Motion */}
+      <motion.main
+        initial={{ opacity: 0, scale: 0.96, y: 24, rotateX: 2 }}
+        animate={
+          loadingComplete
+            ? { opacity: 1, scale: 1, y: 0, rotateX: 0 }
+            : { opacity: 0, scale: 0.96, y: 24, rotateX: 2 }
+        }
+        transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+        style={{ transformOrigin: "50% 15%", perspective: 1200 }}
+        className="min-h-screen bg-[#08080a]/85 overflow-hidden relative z-10"
+      >
+        {/* Hero Section with Muhammad Usman Tahir portrait & Hollow Watermark */}
         <Hero />
 
         {/* Editorial About Section */}
@@ -62,7 +72,7 @@ export default function Home() {
         {/* Categorized Technical Skills */}
         <Skills />
 
-        {/* Practical Projects (Practical Work) */}
+        {/* Practical Projects (Practical Work) with 3D Mechanical Keyboard */}
         <Projects />
 
         {/* 3D Rubik's Cube Section (Positioned between Practical Work & Academic Journey) */}
@@ -76,7 +86,7 @@ export default function Home() {
 
         {/* Contact Section */}
         <Contact />
-      </main>
+      </motion.main>
 
       {/* 6. Footer */}
       <Footer />

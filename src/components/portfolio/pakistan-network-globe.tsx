@@ -342,7 +342,7 @@ export function PakistanNetworkGlobe() {
           Top: Solid Dark Silhouette of Pakistan
           Bottom: Interlocking 3D Wireframe Network Globe */}
       <div className="relative flex flex-col items-center justify-center my-2">
-        
+
         {/* 1. Dark Solid Pakistan Map Silhouette (Positioned directly above the globe, matching Reference 2) */}
         <div className="relative z-20 w-full max-w-[340px] sm:max-w-[420px] aspect-[16/9] -mb-16 sm:-mb-20">
           <svg

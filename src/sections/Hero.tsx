@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, type Variants } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform, type Variants } from "framer-motion";
 import { ArrowRight, Send, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
@@ -44,6 +44,24 @@ export function Hero() {
 
   const heroTechStack = ["C++", "JavaScript", "TypeScript", "Redux", "HTML/CSS"];
 
+  // Interactive 3D tilt for hero portrait
+  const photoX = useMotionValue(0);
+  const photoY = useMotionValue(0);
+  const tiltConfig = { damping: 22, stiffness: 220, mass: 0.4 };
+  const rotateX = useSpring(useTransform(photoY, [-0.5, 0.5], [12, -12]), tiltConfig);
+  const rotateY = useSpring(useTransform(photoX, [-0.5, 0.5], [-12, 12]), tiltConfig);
+
+  const handlePhotoMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    photoX.set((e.clientX - rect.left) / rect.width - 0.5);
+    photoY.set((e.clientY - rect.top) / rect.height - 0.5);
+  };
+
+  const handlePhotoMouseLeave = () => {
+    photoX.set(0);
+    photoY.set(0);
+  };
+
   return (
     <section className="relative min-h-[95vh] flex flex-col justify-center overflow-hidden bg-transparent px-4 sm:px-6 lg:px-8 pt-32 pb-20">
 
@@ -71,14 +89,24 @@ export function Hero() {
       <div className=" pt-15 relative z-10 max-w-6xl mx-auto w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
 
-          {/* Left Column: HD Portrait Photo with Pure Borderless CSS matching Reference 3 */}
+          {/* Left Column: HD Portrait Photo with 3D Tilt */}
           <motion.div
             variants={fadeInUp}
             initial="hidden"
             animate="visible"
             className="lg:col-span-5 flex justify-center lg:justify-start w-full order-1"
           >
-            <div className="relative w-full max-w-[320px] sm:max-w-[370px] group">
+            <motion.div
+              onMouseMove={handlePhotoMouseMove}
+              onMouseLeave={handlePhotoMouseLeave}
+              style={{
+                rotateX,
+                rotateY,
+                perspective: 900,
+                transformStyle: "preserve-3d",
+              }}
+              className="relative w-full max-w-[320px] sm:max-w-[370px] group cursor-pointer"
+            >
               {/* Soft Ambient Warm Glow behind the photo */}
               <div
                 aria-hidden="true"
@@ -94,13 +122,13 @@ export function Hero() {
                   priority
                   quality={100}
                   unoptimized
-                  className="object-cover object-top filter contrast-[1.03] brightness-[1.0] group-hover:scale-[1.02] transition-transform duration-500"
+                  className="object-cover object-top filter contrast-[1.03] brightness-[1.0] group-hover:scale-[1.03] transition-transform duration-500"
                 />
 
                 {/* Subtle Cinematic Bottom Fade */}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#08080a]/75 via-transparent to-transparent pointer-events-none" />
               </div>
-            </div>
+            </motion.div>
           </motion.div>
 
           {/* Right Column: Developer Headline, Bio & Action Buttons matching Reference 3 */}
