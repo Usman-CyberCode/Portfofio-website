@@ -201,7 +201,7 @@ export function About() {
         </motion.div>
       </motion.div>
 
-      {/* Interactive Pakistan Geographic & Educational Telemetry Network */}
+      {/* 3D Rotating Earth & Global Network Mesh System */}
       <motion.div
         variants={fadeInUp}
         initial="hidden"

@@ -338,107 +338,23 @@ export function PakistanNetworkGlobe() {
         </div>
       </div>
 
-      {/* Main Composition matching Reference 2:
-          Top: Solid Dark Silhouette of Pakistan
-          Bottom: Interlocking 3D Wireframe Network Globe */}
-      <div className="relative flex flex-col items-center justify-center my-2">
-
-        {/* 1. Dark Solid Pakistan Map Silhouette (Positioned directly above the globe, matching Reference 2) */}
-        <div className="relative z-20 w-full max-w-[340px] sm:max-w-[420px] aspect-[16/9] -mb-16 sm:-mb-20">
-          <svg
-            viewBox="0 0 400 360"
-            className="w-full h-full filter drop-shadow-[0_0_20px_rgba(249,115,22,0.4)]"
-            style={{ overflow: "visible" }}
-          >
-            <defs>
-              <linearGradient id="pakDarkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#1b1c28" />
-                <stop offset="60%" stopColor="#10111a" />
-                <stop offset="100%" stopColor="#08080c" />
-              </linearGradient>
-
-              <linearGradient id="pakBorderGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="rgba(249,115,22,0.85)" />
-                <stop offset="50%" stopColor="rgba(255,255,255,0.4)" />
-                <stop offset="100%" stopColor="rgba(239,68,68,0.75)" />
-              </linearGradient>
-            </defs>
-
-            {/* Dark Solid Silhouette */}
-            <motion.path
-              d={PAKISTAN_SVG_PATH}
-              fill="url(#pakDarkGrad)"
-              stroke="url(#pakBorderGlow)"
-              strokeWidth="1.8"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8, ease: "easeOut" }}
-            />
-
-            {/* Downward Data Beams linking Pakistan's cities into the rotating globe */}
-            <g stroke="rgba(249, 115, 22, 0.35)" strokeWidth="1" strokeDasharray="3 3">
-              <line x1="296.9" y1="175.3" x2="296.9" y2="340" /> {/* FSD beam down */}
-              <line x1="154.4" y1="329.8" x2="154.4" y2="350" /> {/* KHI beam down */}
-              <line x1="326.9" y1="173.6" x2="326.9" y2="330" /> {/* LHR beam down */}
-            </g>
-
-            {/* Interactive City Nodes */}
-            {TELEMETRY_HUBS.map((hub) => {
-              const isActive = activeHub === hub.id;
-              return (
-                <g
-                  key={hub.id}
-                  className="cursor-pointer"
-                  onClick={() => setActiveHub(hub.id)}
-                >
-                  {(hub.primary || isActive) && (
-                    <circle
-                      cx={hub.x}
-                      cy={hub.y}
-                      r="10"
-                      fill="none"
-                      stroke={hub.accent}
-                      strokeWidth="1.2"
-                      opacity="0.6"
-                      className="animate-ping origin-center"
-                    />
-                  )}
-                  <circle
-                    cx={hub.x}
-                    cy={hub.y}
-                    r={hub.primary ? 4.5 : 3.2}
-                    fill={hub.accent}
-                    filter="drop-shadow(0 0 5px rgba(249,115,22,0.9))"
-                  />
-                  <circle
-                    cx={hub.x}
-                    cy={hub.y}
-                    r={1.5}
-                    fill="#ffffff"
-                  />
-                </g>
-              );
-            })}
-          </svg>
-        </div>
-
-        {/* 2. 3D Rotating Geodesic Network Globe (HTML5 Canvas matching Reference 2) */}
-        <div className="relative z-10 w-full max-w-[340px] sm:max-w-[400px] aspect-[1/0.85] flex items-center justify-center">
+      {/* 3D Rotating Geodesic Earth Network Globe */}
+      <div className="relative flex flex-col items-center justify-center my-4">
+        <div className="relative z-10 w-full max-w-[460px] aspect-[1/0.95] flex items-center justify-center">
           <canvas
             ref={canvasRef}
             className="w-full h-full block"
-            aria-label="3D Spherical Network Globe"
+            aria-label="3D Rotating Earth Spherical Network Globe"
           />
 
-          {/* Corner Crosshairs */}
+          {/* Corner Crosshairs & Telemetry */}
           <div className="pointer-events-none absolute top-4 left-4 text-[9px] font-mono text-zinc-500">
-            [GEO//SYS_NET]
+            [EARTH//GLOBAL_MESH_SYS]
           </div>
           <div className="pointer-events-none absolute bottom-4 right-4 text-[9px] font-mono text-orange-400">
-            SECURE PROTOCOL &bull; C++ &amp; TS
+            ROTATING 3D SPHERE &bull; LIVE NODES
           </div>
         </div>
-
       </div>
 
       {/* Active Hub Telemetry Details Bar */}
@@ -454,7 +370,7 @@ export function PakistanNetworkGlobe() {
         </div>
 
         <div className="flex items-center gap-2">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+
           <span className="text-zinc-300">Global Standards Aligned</span>
         </div>
       </div>
