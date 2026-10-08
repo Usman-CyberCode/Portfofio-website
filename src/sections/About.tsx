@@ -201,13 +201,13 @@ export function About() {
         </motion.div>
       </motion.div>
 
-      {/* Origin & Global Mindset Visualization (PakistanNetworkGlobe) */}
+      {/* 3D Rotating Earth & Global Network Mesh System */}
       <motion.div
         variants={fadeInUp}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-60px" }}
-        className="mt-12"
+        className="mt-14"
       >
         <PakistanNetworkGlobe />
       </motion.div>

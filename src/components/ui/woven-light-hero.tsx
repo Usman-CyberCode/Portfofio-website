@@ -112,6 +112,29 @@ const HeroNav = () => {
   );
 };
 
+// Helper to generate a soft circular glow texture for particles
+function createParticleTexture() {
+  if (typeof document === "undefined") return null;
+  const canvas = document.createElement("canvas");
+  canvas.width = 64;
+  canvas.height = 64;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return null;
+
+  const gradient = ctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+  gradient.addColorStop(0, "rgba(255, 255, 255, 1)");
+  gradient.addColorStop(0.18, "rgba(255, 215, 140, 0.95)");
+  gradient.addColorStop(0.45, "rgba(255, 130, 45, 0.65)");
+  gradient.addColorStop(0.75, "rgba(255, 70, 20, 0.25)");
+  gradient.addColorStop(1, "rgba(0, 0, 0, 0)");
+
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, 64, 64);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  return texture;
+}
+
 // --- Three.js Canvas Component (Interactive Mouse-Reactive Particles) ---
 export const WovenCanvas = ({ className = "absolute inset-0 z-0 pointer-events-none" }: { className?: string }) => {
   const mountRef = useRef<HTMLDivElement>(null);
@@ -135,21 +158,21 @@ export const WovenCanvas = ({ className = "absolute inset-0 z-0 pointer-events-n
     const mouse = new THREE.Vector2(-999, -999);
     const clock = new THREE.Clock();
 
-    // --- Woven Silk Particles ---
-    const particleCount = 28000;
+    // --- Woven Silk Particles (Zero-GC 60-120 FPS high performance loop) ---
+    const particleCount = 3400;
     const positions = new Float32Array(particleCount * 3);
     const originalPositions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
     const velocities = new Float32Array(particleCount * 3);
 
     const geometry = new THREE.BufferGeometry();
-    const torusKnot = new THREE.TorusKnotGeometry(1.6, 0.45, 180, 28);
+    const torusKnot = new THREE.TorusKnotGeometry(1.7, 0.5, 120, 24);
 
     for (let i = 0; i < particleCount; i++) {
       const vertexIndex = i % torusKnot.attributes.position.count;
-      const x = torusKnot.attributes.position.getX(vertexIndex) + (Math.random() - 0.5) * 0.1;
-      const y = torusKnot.attributes.position.getY(vertexIndex) + (Math.random() - 0.5) * 0.1;
-      const z = torusKnot.attributes.position.getZ(vertexIndex) + (Math.random() - 0.5) * 0.1;
+      const x = torusKnot.attributes.position.getX(vertexIndex) + (Math.random() - 0.5) * 0.14;
+      const y = torusKnot.attributes.position.getY(vertexIndex) + (Math.random() - 0.5) * 0.14;
+      const z = torusKnot.attributes.position.getZ(vertexIndex) + (Math.random() - 0.5) * 0.14;
 
       positions[i * 3] = x;
       positions[i * 3 + 1] = y;
@@ -158,10 +181,21 @@ export const WovenCanvas = ({ className = "absolute inset-0 z-0 pointer-events-n
       originalPositions[i * 3 + 1] = y;
       originalPositions[i * 3 + 2] = z;
 
-      // Warm amber, orange, and red palette complementing the portfolio
+      // Radiant orange, gold, and amber palette with bright luminescence
       const color = new THREE.Color();
-      const hue = 0.03 + Math.random() * 0.08; // 0.03 to 0.11 (red-orange to amber)
-      color.setHSL(hue, 0.9, 0.6);
+      const rand = Math.random();
+      if (rand < 0.22) {
+        // High-energy warm gold / white spark highlights
+        color.setHSL(0.11, 0.95, 0.78);
+      } else if (rand < 0.65) {
+        // Bright fiery orange (matching brand accents)
+        const hue = 0.055 + Math.random() * 0.035;
+        color.setHSL(hue, 1.0, 0.68);
+      } else {
+        // Rich vibrant amber & flame
+        const hue = 0.025 + Math.random() * 0.03;
+        color.setHSL(hue, 0.98, 0.62);
+      }
       colors[i * 3] = color.r;
       colors[i * 3 + 1] = color.g;
       colors[i * 3 + 2] = color.b;
@@ -176,12 +210,16 @@ export const WovenCanvas = ({ className = "absolute inset-0 z-0 pointer-events-n
     geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
     geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
 
+    const particleTexture = createParticleTexture();
+
     const material = new THREE.PointsMaterial({
-      size: 0.022,
+      size: 0.082,
+      map: particleTexture || undefined,
       vertexColors: true,
       blending: THREE.AdditiveBlending,
       transparent: true,
-      opacity: 0.85,
+      opacity: 0.96,
+      depthWrite: false,
     });
 
     const points = new THREE.Points(geometry, material);
@@ -198,46 +236,63 @@ export const WovenCanvas = ({ className = "absolute inset-0 z-0 pointer-events-n
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
-      const elapsedTime = clock.getElapsedTime();
 
-      const mouseWorld = new THREE.Vector3(mouse.x * 4, mouse.y * 4, 0);
+      // Skip CPU/GPU workload when page is backgrounded
+      if (document.hidden) return;
+
+      const elapsedTime = clock.getElapsedTime();
+      const mouseWorldX = mouse.x * 4;
+      const mouseWorldY = mouse.y * 4;
 
       for (let i = 0; i < particleCount; i++) {
         const ix = i * 3;
-        const iy = i * 3 + 1;
-        const iz = i * 3 + 2;
+        const iy = ix + 1;
+        const iz = ix + 2;
 
-        const currentPos = new THREE.Vector3(positions[ix], positions[iy], positions[iz]);
-        const originalPos = new THREE.Vector3(
-          originalPositions[ix],
-          originalPositions[iy],
-          originalPositions[iz]
-        );
-        const velocity = new THREE.Vector3(velocities[ix], velocities[iy], velocities[iz]);
+        const px = positions[ix];
+        const py = positions[iy];
+        const pz = positions[iz];
 
-        const dist = currentPos.distanceTo(mouseWorld);
-        if (dist < 1.6) {
+        const ox = originalPositions[ix];
+        const oy = originalPositions[iy];
+        const oz = originalPositions[iz];
+
+        let vx = velocities[ix];
+        let vy = velocities[iy];
+        let vz = velocities[iz];
+
+        // Interaction repulsion without vector allocations
+        const dx = px - mouseWorldX;
+        const dy = py - mouseWorldY;
+        const dz = pz;
+        const distSq = dx * dx + dy * dy + dz * dz;
+
+        if (distSq < 2.56 && distSq > 0.0001) {
+          const dist = Math.sqrt(distSq);
           const force = (1.6 - dist) * 0.015;
-          const direction = new THREE.Vector3().subVectors(currentPos, mouseWorld).normalize();
-          velocity.add(direction.multiplyScalar(force));
+          const invDist = 1 / dist;
+          vx += dx * invDist * force;
+          vy += dy * invDist * force;
+          vz += dz * invDist * force;
         }
 
-        // Return to original position
-        const returnForce = new THREE.Vector3()
-          .subVectors(originalPos, currentPos)
-          .multiplyScalar(0.0012);
-        velocity.add(returnForce);
+        // Return to original anchor point
+        vx += (ox - px) * 0.0012;
+        vy += (oy - py) * 0.0012;
+        vz += (oz - pz) * 0.0012;
 
-        // Damping
-        velocity.multiplyScalar(0.95);
+        // Friction damping
+        vx *= 0.95;
+        vy *= 0.95;
+        vz *= 0.95;
 
-        positions[ix] += velocity.x;
-        positions[iy] += velocity.y;
-        positions[iz] += velocity.z;
+        positions[ix] = px + vx;
+        positions[iy] = py + vy;
+        positions[iz] = pz + vz;
 
-        velocities[ix] = velocity.x;
-        velocities[iy] = velocity.y;
-        velocities[iz] = velocity.z;
+        velocities[ix] = vx;
+        velocities[iy] = vy;
+        velocities[iz] = vz;
       }
       geometry.attributes.position.needsUpdate = true;
 
@@ -263,6 +318,7 @@ export const WovenCanvas = ({ className = "absolute inset-0 z-0 pointer-events-n
       window.removeEventListener("mousemove", handleMouseMove);
       geometry.dispose();
       material.dispose();
+      particleTexture?.dispose();
       renderer.dispose();
       if (mount && renderer.domElement.parentNode === mount) {
         mount.removeChild(renderer.domElement);

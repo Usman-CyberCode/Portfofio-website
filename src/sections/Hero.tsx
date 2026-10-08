@@ -3,14 +3,11 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, type Variants } from "framer-motion";
-import { ArrowRight, Send, GraduationCap, Sparkles } from "lucide-react";
+import { motion, useMotionValue, useSpring, useTransform, type Variants } from "framer-motion";
+import { ArrowRight, Send, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { GithubIcon, LinkedInIcon } from "@/components/ui/Icons";
-import { WovenCanvas } from "@/components/ui/woven-light-hero";
-import { CursorParticles } from "@/components/ui/cursor-particles";
-import { TechnologyStack3D } from "@/components/portfolio/technology-stack-3d";
 import { personalData } from "@/data";
 import { fadeInUp } from "@/animations/motion";
 
@@ -19,14 +16,14 @@ const containerVariants: Variants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.08,
+      staggerChildren: 0.08,
+      delayChildren: 0.1,
     },
   },
 };
 
 const itemVariants: Variants = {
-  hidden: { opacity: 0, y: 18 },
+  hidden: { opacity: 0, y: 16 },
   visible: {
     opacity: 1,
     y: 0,
@@ -47,22 +44,28 @@ export function Hero() {
 
   const heroTechStack = ["C++", "JavaScript", "TypeScript", "React", "Redux"];
 
+  // Interactive 3D tilt for hero portrait
+  const photoX = useMotionValue(0);
+  const photoY = useMotionValue(0);
+  const tiltConfig = { damping: 22, stiffness: 220, mass: 0.4 };
+  const rotateX = useSpring(useTransform(photoY, [-0.5, 0.5], [12, -12]), tiltConfig);
+  const rotateY = useSpring(useTransform(photoX, [-0.5, 0.5], [-12, 12]), tiltConfig);
+
+  const handlePhotoMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    photoX.set((e.clientX - rect.left) / rect.width - 0.5);
+    photoY.set((e.clientY - rect.top) / rect.height - 0.5);
+  };
+
+  const handlePhotoMouseLeave = () => {
+    photoX.set(0);
+    photoY.set(0);
+  };
+
   return (
-    <section className="relative min-h-[94vh] flex items-center justify-center overflow-hidden bg-[#08080a] px-4 sm:px-6 lg:px-8 pt-28 pb-16">
-      {/* 1. Background Cursor Particles (Interactive ambient physics) */}
-      <CursorParticles
-        particleCount={18}
-        particleColor="#f97316"
-        backgroundColor="transparent"
-        className="absolute inset-0 z-0 pointer-events-none opacity-40"
-      />
+    <section className="relative min-h-[95vh] flex flex-col justify-center overflow-hidden bg-transparent px-4 sm:px-6 lg:px-8 pt-32 pb-20">
 
-      {/* 2. Motion Particles Canvas positioned specifically on the RIGHT side as requested */}
-      <div className="absolute top-0 right-0 bottom-0 w-full lg:w-[60vw] max-w-[850px] z-0 pointer-events-none overflow-hidden opacity-55">
-        <WovenCanvas className="w-full h-full pointer-events-none" />
-      </div>
-
-      {/* 3. Atmospheric Depth Glow (Behind content) */}
+      {/* 3. Atmospheric Depth Glow */}
       <div
         aria-hidden="true"
         className="pointer-events-none absolute top-1/4 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[340px] bg-gradient-to-tr from-orange-600/10 via-amber-600/6 to-transparent blur-3xl rounded-full"
@@ -72,21 +75,63 @@ export function Hero() {
         className="pointer-events-none absolute bottom-12 right-1/4 w-80 h-80 bg-red-600/5 blur-[120px] rounded-full"
       />
 
-      {/* 4. Large Hollow Text Typography Accent in Background */}
+      {/* 4. Hollow Text Watermark in Hero Background */}
       <div
         aria-hidden="true"
         className="absolute top-16 left-6 lg:left-14 select-none pointer-events-none z-[1] opacity-15 overflow-hidden"
       >
-        <span className="text-hollow-lg text-7xl sm:text-8xl md:text-9xl lg:text-[140px] font-black tracking-tighter leading-none block">
+        <div className="text-hollow-lg text-7xl sm:text-8xl md:text-9xl lg:text-[140px] font-black tracking-tighter leading-none block">
           DEVELOPER
-        </span>
+        </div>
       </div>
 
-      {/* 5. Main Content Grid: Left Column Text & Profile, Right Column TechnologyStack3D */}
-      <div className="relative z-10 max-w-7xl mx-auto w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8 items-center">
-          
-          {/* Left Column: Developer Headline, Bio & Action Buttons */}
+      {/* 5. Main Hero Grid: Left Portrait Photo & Right Bio matching Reference 3 */}
+      <div className=" pt-15 relative z-10 max-w-6xl mx-auto w-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+
+          {/* Left Column: HD Portrait Photo with 3D Tilt */}
+          <motion.div
+            variants={fadeInUp}
+            initial="hidden"
+            animate="visible"
+            className="lg:col-span-5 flex justify-center lg:justify-start w-full order-1"
+          >
+            <motion.div
+              onMouseMove={handlePhotoMouseMove}
+              onMouseLeave={handlePhotoMouseLeave}
+              style={{
+                rotateX,
+                rotateY,
+                perspective: 900,
+                transformStyle: "preserve-3d",
+              }}
+              className="relative w-full max-w-[320px] sm:max-w-[370px] group cursor-pointer"
+            >
+              {/* Soft Ambient Warm Glow behind the photo */}
+              <div
+                aria-hidden="true"
+                className="absolute -inset-4 rounded-3xl bg-gradient-to-tr from-orange-500/20 via-amber-500/10 to-red-500/10 blur-2xl opacity-75 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+              />
+
+              {/* Completely Borderless HD Image with smooth rounded corners and shadow */}
+              <div className="relative w-full aspect-[3/4] sm:aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl shadow-black/90">
+                <Image
+                  src="/images/profile.jpg"
+                  alt={personalData.name}
+                  fill
+                  priority
+                  quality={100}
+                  unoptimized
+                  className="object-cover object-top filter contrast-[1.03] brightness-[1.0] group-hover:scale-[1.03] transition-transform duration-500"
+                />
+
+                {/* Subtle Cinematic Bottom Fade */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#08080a]/75 via-transparent to-transparent pointer-events-none" />
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Right Column: Developer Headline, Bio & Action Buttons matching Reference 3 */}
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -136,16 +181,15 @@ export function Hero() {
               className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-[1.08] mb-3"
             >
               Hi, I&apos;m{" "}
-              <span className="text-white">Muhammad</span>{" "}
-              <span className="text-gradient-fire">Usman</span>
+              <span className="text-white">Muhammad Usman Tahir</span>
             </motion.h1>
 
-            {/* Professional Title with Hollow Highlight */}
+            {/* Professional Title with Hollow Text Accent */}
             <motion.div variants={itemVariants} className="mb-4 flex flex-wrap items-center gap-2 justify-center lg:justify-start">
               <span className="text-xl sm:text-2xl md:text-3xl font-semibold text-zinc-200 tracking-tight">
                 Web Developer
               </span>
-              <span className="text-zinc-500 mx-0.5">&bull;</span>
+              <span className="text-zinc-500 mx-1">&bull;</span>
               <span className="text-xl sm:text-2xl md:text-3xl font-semibold text-hollow-accent">
                 Problem Solver in C++
               </span>
@@ -186,7 +230,7 @@ export function Hero() {
                 <Button
                   size="lg"
                   variant="default"
-                  className="w-full sm:w-auto text-xs sm:text-sm font-medium shadow-lg shadow-orange-500/25 group font-mono cursor-pointer"
+                  className="w-full sm:w-auto text-xs sm:text-sm font-medium shadow-md shadow-orange-500/25 group font-mono cursor-pointer"
                 >
                   <span>View Projects</span>
                   <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />

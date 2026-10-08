@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { motion, useMotionValue, useSpring, useVelocity, useTransform } from "framer-motion";
+import React, { useEffect, useState, useRef } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 
 export function CustomCursor() {
   const [isVisible, setIsVisible] = useState(false);
@@ -9,26 +9,28 @@ export function CustomCursor() {
   const [isClicked, setIsClicked] = useState(false);
   const [isTouchDevice, setIsTouchDevice] = useState(false);
 
-  // Exact cursor coordinates
-  const mouseX = useMotionValue(-500);
-  const mouseY = useMotionValue(-500);
+  // Raw mouse coordinates
+  const mouseX = useMotionValue(-100);
+  const mouseY = useMotionValue(-100);
 
-  // Spring physics for responsive, fluid movement
-  const springAura = { damping: 40, stiffness: 220, mass: 0.6 };
-  const springRing = { damping: 25, stiffness: 380, mass: 0.2 };
+  // Velocity tracking for 3D attitude tilt
+  const prevPos = useRef({ x: -100, y: -100, time: Date.now() });
+  const tiltX = useMotionValue(0);
+  const tiltY = useMotionValue(0);
 
-  const auraX = useSpring(mouseX, springAura);
-  const auraY = useSpring(mouseY, springAura);
+  // Primary smooth spring
+  const springPrimary = { damping: 26, stiffness: 360, mass: 0.28 };
+  const smoothX = useSpring(mouseX, springPrimary);
+  const smoothY = useSpring(mouseY, springPrimary);
 
-  const ringX = useSpring(mouseX, springRing);
-  const ringY = useSpring(mouseY, springRing);
+  // Secondary trailing lag spring for fluid 3D comet tail
+  const springTrail = { damping: 30, stiffness: 220, mass: 0.45 };
+  const trailX = useSpring(mouseX, springTrail);
+  const trailY = useSpring(mouseY, springTrail);
 
-  // Calculate 3D tilt based on velocity for physical inertia
-  const velocityX = useVelocity(mouseX);
-  const velocityY = useVelocity(mouseY);
-
-  const tiltX = useTransform(velocityY, [-1500, 1500], [25, -25]);
-  const tiltY = useTransform(velocityX, [-1500, 1500], [-25, 25]);
+  // Smooth springs for 3D tilt
+  const smoothTiltX = useSpring(tiltX, { damping: 18, stiffness: 200 });
+  const smoothTiltY = useSpring(tiltY, { damping: 18, stiffness: 200 });
 
   useEffect(() => {
     // Disable on touch devices
@@ -38,6 +40,20 @@ export function CustomCursor() {
     }
 
     const handleMouseMove = (e: MouseEvent) => {
+      const now = Date.now();
+      const dt = Math.max(1, now - prevPos.current.time);
+      const vx = (e.clientX - prevPos.current.x) / dt;
+      const vy = (e.clientY - prevPos.current.y) / dt;
+
+      // Calculate 3D tilt angles based on velocity (clamped to [-35, 35] deg)
+      const targetTiltY = Math.max(-35, Math.min(35, vx * 22));
+      const targetTiltX = Math.max(-35, Math.min(35, -vy * 22));
+
+      tiltY.set(targetTiltY);
+      tiltX.set(targetTiltX);
+
+      prevPos.current = { x: e.clientX, y: e.clientY, time: now };
+
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
       if (!isVisible) setIsVisible(true);
@@ -71,7 +87,7 @@ export function CustomCursor() {
       document.removeEventListener("mouseleave", handleMouseLeave);
       document.removeEventListener("mouseenter", handleMouseEnter);
     };
-  }, [mouseX, mouseY, isVisible]);
+  }, [mouseX, mouseY, tiltX, tiltY, isVisible]);
 
   if (isTouchDevice || !isVisible) return null;
 
@@ -80,50 +96,74 @@ export function CustomCursor() {
       className="pointer-events-none fixed inset-0 z-[99999] overflow-hidden select-none"
       aria-hidden="true"
     >
-      {/* 1. Full-Screen Interactive 3D Ambient Light Aura (Illuminates UI softly across entire screen) */}
+      {/* 1. Fluid 3D Trailing Comet Aura (Lagging Node) */}
+      <motion.div
+        style={{
+          x: trailX,
+          y: trailY,
+          translateX: "-50%",
+          translateY: "-50%",
+        }}
+        className="fixed top-0 left-0 w-10 h-10 rounded-full bg-gradient-to-tr from-orange-600/20 via-amber-500/15 to-transparent blur-md"
+      />
+
+      {/* 2. Gyroscopic 3D HUD Reticle with Real Aerodynamic Attitude Tilt */}
       <motion.div
         style={{
           x: auraX,
           y: auraY,
           translateX: "-50%",
           translateY: "-50%",
-        }}
-        className="fixed top-0 left-0 w-[420px] h-[420px] rounded-full pointer-events-none opacity-40 mix-blend-screen"
-      >
-        <div className="w-full h-full rounded-full bg-gradient-to-tr from-orange-500/15 via-red-500/10 to-transparent blur-3xl" />
-      </motion.div>
-
-      {/* 2. 3D Floating Kinetic Inertia Ring */}
-      <motion.div
-        style={{
-          x: ringX,
-          y: ringY,
-          translateX: "-50%",
-          translateY: "-50%",
-          rotateX: tiltX,
-          rotateY: tiltY,
+          rotateX: smoothTiltX,
+          rotateY: smoothTiltY,
+          perspective: 800,
+          transformStyle: "preserve-3d",
         }}
         animate={{
-          scale: isClicked ? 0.75 : isHovered ? 2.1 : 1,
-          borderColor: isHovered ? "rgba(249, 115, 22, 0.85)" : "rgba(255, 255, 255, 0.25)",
-          boxShadow: isHovered
-            ? "0 0 24px rgba(249, 115, 22, 0.4), inset 0 0 10px rgba(249, 115, 22, 0.2)"
-            : "0 0 0px transparent",
+          scale: isClicked ? 0.75 : isHovered ? 1.85 : 1,
         }}
-        transition={{ duration: 0.18, ease: "easeOut" }}
-        className="fixed top-0 left-0 w-8 h-8 rounded-full border border-white/25 backdrop-blur-[1px] transform-style-3d flex items-center justify-center"
+        transition={{ duration: 0.16, ease: "easeOut" }}
+        className="fixed top-0 left-0 w-8 h-8 flex items-center justify-center"
       >
-        {/* Subtle crosshairs or inner ticks when hovering interactive items */}
-        {isHovered && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="w-1.5 h-1.5 rounded-full bg-orange-400"
+        {/* Outer Ring with Ambient Pulse */}
+        <div
+          className={`absolute inset-0 rounded-full border transition-colors duration-200 ${
+            isHovered
+              ? "border-orange-500/80 shadow-[0_0_16px_rgba(249,115,22,0.6)] bg-orange-500/10"
+              : "border-white/25 bg-white/[0.02]"
+          }`}
+        />
+
+        {/* 3D Rotating Crosshair Ticks */}
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
+          className="absolute inset-0 flex items-center justify-center pointer-events-none"
+        >
+          <span
+            className={`absolute top-0 w-1 h-[2px] rounded-full transition-colors ${
+              isHovered ? "bg-orange-400" : "bg-white/40"
+            }`}
           />
-        )}
+          <span
+            className={`absolute bottom-0 w-1 h-[2px] rounded-full transition-colors ${
+              isHovered ? "bg-orange-400" : "bg-white/40"
+            }`}
+          />
+          <span
+            className={`absolute left-0 h-1 w-[2px] rounded-full transition-colors ${
+              isHovered ? "bg-orange-400" : "bg-white/40"
+            }`}
+          />
+          <span
+            className={`absolute right-0 h-1 w-[2px] rounded-full transition-colors ${
+              isHovered ? "bg-orange-400" : "bg-white/40"
+            }`}
+          />
+        </motion.div>
       </motion.div>
 
-      {/* 3. Precision Center Core Dot with Subtle Depth */}
+      {/* 3. Precision Glowing Plasma Core with 3D Depth Tracking */}
       <motion.div
         style={{
           x: mouseX,
@@ -132,15 +172,36 @@ export function CustomCursor() {
           translateY: "-50%",
         }}
         animate={{
-          scale: isHovered ? 0.4 : isClicked ? 1.4 : 1,
-          backgroundColor: isHovered ? "#ff7a18" : "#ffffff",
-          boxShadow: isHovered
-            ? "0 0 14px rgba(249, 115, 22, 1)"
-            : "0 0 8px rgba(255, 255, 255, 0.8)",
+          scale: isClicked ? 1.4 : isHovered ? 0.6 : 1,
         }}
         transition={{ duration: 0.1, ease: "easeOut" }}
-        className="fixed top-0 left-0 w-1.5 h-1.5 rounded-full bg-white shadow-sm"
-      />
+        className="fixed top-0 left-0 flex items-center justify-center"
+      >
+        {/* Pulsing Core Energy Orb */}
+        <div
+          className={`w-2.5 h-2.5 rounded-full transition-all duration-150 ${
+            isHovered
+              ? "bg-gradient-to-r from-amber-400 to-orange-500 shadow-[0_0_12px_rgba(249,115,22,1)]"
+              : "bg-white shadow-[0_0_8px_rgba(255,255,255,0.9),0_0_16px_rgba(249,115,22,0.7)]"
+          }`}
+        />
+      </motion.div>
+
+      {/* 4. Click Shockwave Wavefront */}
+      {isClicked && (
+        <motion.div
+          initial={{ scale: 0.5, opacity: 0.9 }}
+          animate={{ scale: 2.4, opacity: 0 }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+          style={{
+            x: mouseX,
+            y: mouseY,
+            translateX: "-50%",
+            translateY: "-50%",
+          }}
+          className="fixed top-0 left-0 w-8 h-8 rounded-full border border-orange-400/80 pointer-events-none"
+        />
+      )}
     </div>
   );
 }

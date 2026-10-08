@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { Globe2, MapPin, Radio, Activity, Compass } from "lucide-react";
+import { Globe2, MapPin, Radio, Activity, Compass, ShieldCheck } from "lucide-react";
 
 // Official cartographic 571-point vector boundary of Pakistan from Natural Earth 50m
 const PAKISTAN_SVG_PATH =
@@ -50,7 +50,7 @@ const TELEMETRY_HUBS = [
     label: "Northern Hub",
     x: 260.5,
     y: 115.1,
-    accent: "#71717a",
+    accent: "#a1a1aa",
   },
   {
     id: "qta",
@@ -58,7 +58,7 @@ const TELEMETRY_HUBS = [
     label: "Southwest Node",
     x: 153.8,
     y: 205.0,
-    accent: "#71717a",
+    accent: "#a1a1aa",
   },
   {
     id: "glt",
@@ -66,7 +66,7 @@ const TELEMETRY_HUBS = [
     label: "Highlands Relay",
     x: 325.9,
     y: 70.4,
-    accent: "#71717a",
+    accent: "#a1a1aa",
   },
 ];
 
@@ -88,8 +88,6 @@ export function PakistanNetworkGlobe() {
   // Mouse tilt values for gentle 3D parallax
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
-  const springX = useSpring(mouseX, { damping: 25, stiffness: 180 });
-  const springY = useSpring(mouseY, { damping: 25, stiffness: 180 });
 
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -99,7 +97,7 @@ export function PakistanNetworkGlobe() {
     return () => mediaQuery.removeEventListener("change", handler);
   }, []);
 
-  // 3D Spherical Network Canvas Implementation
+  // 3D Spherical Network Canvas Implementation matching Reference 2
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -107,8 +105,8 @@ export function PakistanNetworkGlobe() {
     if (!ctx) return;
 
     let animationFrameId: number;
-    let width = (canvas.width = canvas.parentElement?.clientWidth || 360);
-    let height = (canvas.height = canvas.parentElement?.clientHeight || 280);
+    let width = (canvas.width = canvas.parentElement?.clientWidth || 400);
+    let height = (canvas.height = canvas.parentElement?.clientHeight || 340);
 
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = width * dpr;
@@ -117,9 +115,9 @@ export function PakistanNetworkGlobe() {
     canvas.style.height = `${height}px`;
     ctx.scale(dpr, dpr);
 
-    // Generate ~130 Fibonacci sphere points
-    const sphereRadius = Math.min(width, height) * 0.38;
-    const nodeCount = 130;
+    // Generate ~140 Fibonacci sphere points
+    const sphereRadius = Math.min(width, height) * 0.42;
+    const nodeCount = 140;
     const nodes: Point3D[] = [];
     const phi = Math.PI * (3 - Math.sqrt(5)); // Golden ratio angle
 
@@ -131,36 +129,33 @@ export function PakistanNetworkGlobe() {
       const x = Math.cos(theta) * radiusAtY;
       const z = Math.sin(theta) * radiusAtY;
 
-      // Restrained color palette: primarily crisp white/silver, orange/red accents on strategic nodes
-      const isOrangeAccent = i % 11 === 0;
-      const isRedAccent = i % 19 === 0;
-      const isAccent = isOrangeAccent || isRedAccent;
+      // Restrained palette matching Reference 2: predominantly crisp silver/white and subtle dark slate nodes
+      const isOrangeAccent = i % 14 === 0;
+      const isMuted = i % 4 === 0;
 
       nodes.push({
         x: x * sphereRadius,
         y: y * sphereRadius,
         z: z * sphereRadius,
-        size: isAccent ? 2.5 + Math.random() * 1.5 : 1.2 + Math.random() * 1.2,
-        accent: isAccent,
-        baseColor: isOrangeAccent ? "#f97316" : isRedAccent ? "#ef4444" : "#ffffff",
+        size: isOrangeAccent ? 2.8 : isMuted ? 1.4 : 2.0,
+        accent: isOrangeAccent,
+        baseColor: isOrangeAccent ? "#f97316" : "#ffffff",
       });
     }
 
     let rotationY = 0;
-    const tiltX = 0.22; // subtle X tilt for nice perspective
+    const tiltX = 0.18; // subtle X tilt for nice perspective
 
-    let targetRotSpeed = reducedMotion ? 0.0005 : 0.0035;
-    let rotSpeed = targetRotSpeed;
+    let targetRotSpeed = reducedMotion ? 0.0005 : 0.0032;
 
     const render = () => {
       ctx.clearRect(0, 0, width, height);
 
-      rotationY += rotSpeed;
+      rotationY += targetRotSpeed;
 
       const centerX = width / 2;
-      const centerY = height / 2;
+      const centerY = height / 2 + 10; // slight offset to nest cleanly under Pakistan
 
-      // Project each 3D point into 2D screen coordinates
       const cosY = Math.cos(rotationY);
       const sinY = Math.sin(rotationY);
       const cosX = Math.cos(tiltX);
@@ -177,7 +172,7 @@ export function PakistanNetworkGlobe() {
 
         // Perspective depth factor
         const depth = (z2 + sphereRadius) / (2 * sphereRadius);
-        const scale = 0.75 + depth * 0.45;
+        const scale = 0.8 + depth * 0.4;
 
         return {
           px: centerX + x1 * scale,
@@ -190,27 +185,26 @@ export function PakistanNetworkGlobe() {
         };
       });
 
-      // Draw geodesic connection lines between nearby nodes
-      ctx.lineWidth = 0.65;
-      const connectionDist = sphereRadius * 0.48;
+      // Draw geodesic connection lines matching Reference 2 wireframe sphere
+      ctx.lineWidth = 0.6;
+      const connectionDist = sphereRadius * 0.44;
 
       for (let i = 0; i < projected.length; i++) {
         const p1 = projected[i];
-        // Only draw lines if at least one point is on the front hemisphere
-        if (p1.pz < -sphereRadius * 0.35) continue;
+        if (p1.pz < -sphereRadius * 0.4) continue;
 
         for (let j = i + 1; j < projected.length; j++) {
           const p2 = projected[j];
-          if (p2.pz < -sphereRadius * 0.35) continue;
+          if (p2.pz < -sphereRadius * 0.4) continue;
 
           const dx = p1.px - p2.px;
           const dy = p1.py - p2.py;
           const dist = Math.hypot(dx, dy);
 
           if (dist < connectionDist) {
-            const alpha = (1 - dist / connectionDist) * 0.22 * Math.max(0.1, p1.depth);
+            const alpha = (1 - dist / connectionDist) * 0.28 * Math.max(0.12, p1.depth);
             ctx.strokeStyle = p1.accent || p2.accent
-              ? `rgba(249, 115, 22, ${alpha * 1.5})`
+              ? `rgba(249, 115, 22, ${alpha * 1.4})`
               : `rgba(255, 255, 255, ${alpha})`;
 
             ctx.beginPath();
@@ -226,7 +220,7 @@ export function PakistanNetworkGlobe() {
 
       for (let i = 0; i < projected.length; i++) {
         const p = projected[i];
-        const alpha = Math.max(0.12, Math.min(0.95, p.depth * 0.95));
+        const alpha = Math.max(0.15, Math.min(0.95, p.depth * 0.95));
 
         ctx.save();
         if (p.accent) {
@@ -244,17 +238,17 @@ export function PakistanNetworkGlobe() {
         ctx.restore();
       }
 
-      // Central ambient pulse glow at center of globe
+      // Central ambient pulse glow matching Reference 2 inner luminescence
       const gradient = ctx.createRadialGradient(
         centerX,
         centerY,
-        sphereRadius * 0.1,
+        sphereRadius * 0.15,
         centerX,
         centerY,
         sphereRadius * 0.95
       );
-      gradient.addColorStop(0, "rgba(249, 115, 22, 0.08)");
-      gradient.addColorStop(0.5, "rgba(239, 68, 68, 0.03)");
+      gradient.addColorStop(0, "rgba(255, 255, 255, 0.08)");
+      gradient.addColorStop(0.4, "rgba(249, 115, 22, 0.04)");
       gradient.addColorStop(1, "transparent");
       ctx.fillStyle = gradient;
       ctx.beginPath();
@@ -268,8 +262,8 @@ export function PakistanNetworkGlobe() {
 
     const handleResize = () => {
       if (!canvas.parentElement) return;
-      width = canvas.parentElement.clientWidth || 360;
-      height = canvas.parentElement.clientHeight || 280;
+      width = canvas.parentElement.clientWidth || 400;
+      height = canvas.parentElement.clientHeight || 340;
       canvas.width = width * dpr;
       canvas.height = height * dpr;
       canvas.style.width = `${width}px`;
@@ -304,203 +298,80 @@ export function PakistanNetworkGlobe() {
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      className="relative w-full max-w-2xl mx-auto rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-[#13141f]/90 via-[#0d0e15]/95 to-[#07070b]/98 border border-white/[0.08] shadow-[0_25px_55px_-12px_rgba(0,0,0,0.85)] backdrop-blur-xl overflow-hidden select-none"
-      aria-label="Digital Origin & Global Network System — Pakistan to Global Mindset"
+      className="relative w-full max-w-3xl mx-auto rounded-3xl p-6 sm:p-8 bg-gradient-to-b from-[#13141f]/95 via-[#0d0e15]/98 to-[#07070b] border border-white/[0.08] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.85)] backdrop-blur-xl overflow-hidden select-none"
+      aria-label="Digital Origin & Global Network System — Reference 2 Architecture"
     >
-      {/* Ambient background light cones */}
+      {/* Ambient background glow */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -top-16 -left-16 w-64 h-64 rounded-full bg-orange-600/10 blur-3xl"
+        className="pointer-events-none absolute -top-12 -left-12 w-64 h-64 rounded-full bg-orange-600/10 blur-3xl"
       />
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -bottom-16 -right-16 w-64 h-64 rounded-full bg-red-600/10 blur-3xl"
+        className="pointer-events-none absolute -bottom-12 -right-12 w-64 h-64 rounded-full bg-red-600/10 blur-3xl"
       />
 
       {/* Header Telemetry Bar */}
-      <div className="relative z-10 flex flex-wrap items-center justify-between pb-4 mb-6 border-b border-white/[0.06] gap-2">
+      <div className="relative z-10 flex flex-wrap items-center justify-between pb-4 mb-4 border-b border-white/[0.06] gap-2">
         <div className="flex items-center gap-2.5">
           <div className="p-1.5 rounded-lg bg-orange-500/10 border border-orange-500/20 text-orange-400">
             <Radio className="w-4 h-4 animate-pulse" />
           </div>
           <div>
             <span className="text-xs font-mono uppercase tracking-widest text-white font-bold block">
-              ORIGIN &amp; GLOBAL CONNECTIVITY
+              ORIGIN &bull; PAKISTAN TO GLOBAL MESH
             </span>
             <span className="text-[10px] font-mono text-zinc-400 block">
-              Pakistan &bull; Faisalabad (UAF) &rarr; Global Developer Ecosystem
+              Saylani Welfare Trust &bull; University of Agriculture Faisalabad &rarr; Global Web
             </span>
           </div>
         </div>
 
         <div className="flex items-center gap-2 text-[10px] font-mono text-zinc-400">
-          <span className="px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 flex items-center gap-1.5">
+          <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 flex items-center gap-1.5 font-medium">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
             NODE ACTIVE
           </span>
-          <span className="hidden sm:inline-block px-2 py-0.5 rounded bg-white/[0.03] border border-white/[0.06]">
+          <span className="px-2.5 py-0.5 rounded bg-white/[0.03] border border-white/[0.06] text-orange-400/90">
             31.4504&deg; N, 73.0791&deg; E
           </span>
         </div>
       </div>
 
-      {/* Main Visual Composition: Pakistan Silhouette (Above) -> Digital Beams -> Network Globe (Below) */}
-      <div className="relative grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-        
-        {/* Left Column: Official Pakistan Cartographic Silhouette with Telemetry Hubs */}
-        <div className="md:col-span-6 relative flex flex-col items-center">
-          <div className="relative w-full max-w-[280px] aspect-square flex items-center justify-center">
-            {/* Subtle glow behind Pakistan */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-4 rounded-full bg-gradient-to-tr from-orange-500/15 via-red-500/10 to-transparent blur-2xl opacity-60"
-            />
+      {/* 3D Rotating Geodesic Earth Network Globe */}
+      <div className="relative flex flex-col items-center justify-center my-4">
+        <div className="relative z-10 w-full max-w-[460px] aspect-[1/0.95] flex items-center justify-center">
+          <canvas
+            ref={canvasRef}
+            className="w-full h-full block"
+            aria-label="3D Rotating Earth Spherical Network Globe"
+          />
 
-            {/* Pakistan Vector Map Silhouette */}
-            <svg
-              viewBox="0 0 400 400"
-              className="w-full h-full filter drop-shadow-[0_0_16px_rgba(249,115,22,0.35)] transition-transform duration-500"
-              style={{ overflow: "visible" }}
-            >
-              <defs>
-                <linearGradient id="pakistanGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#1e202f" />
-                  <stop offset="60%" stopColor="#13141e" />
-                  <stop offset="100%" stopColor="#0a0a0f" />
-                </linearGradient>
-
-                <linearGradient id="pakistanStroke" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="rgba(249,115,22,0.8)" />
-                  <stop offset="50%" stopColor="rgba(255,255,255,0.3)" />
-                  <stop offset="100%" stopColor="rgba(239,68,68,0.7)" />
-                </linearGradient>
-              </defs>
-
-              {/* Sovereign Border Polygon */}
-              <motion.path
-                d={PAKISTAN_SVG_PATH}
-                fill="url(#pakistanGradient)"
-                stroke="url(#pakistanStroke)"
-                strokeWidth="1.6"
-                initial={{ pathLength: 0, opacity: 0 }}
-                animate={{ pathLength: 1, opacity: 1 }}
-                transition={{ duration: 1.8, ease: "easeInOut" }}
-              />
-
-              {/* Internal Interconnection Lines between Cities */}
-              <g stroke="rgba(249, 115, 22, 0.25)" strokeWidth="0.8" strokeDasharray="3 3">
-                <line x1="296.9" y1="175.3" x2="326.9" y2="173.6" /> {/* FSD -> LHR */}
-                <line x1="296.9" y1="175.3" x2="296.2" y2="122.9" /> {/* FSD -> ISB */}
-                <line x1="296.9" y1="175.3" x2="154.4" y2="329.8" /> {/* FSD -> KHI */}
-                <line x1="296.2" y1="122.9" x2="260.5" y2="115.1" /> {/* ISB -> PSH */}
-                <line x1="296.9" y1="175.3" x2="153.8" y2="205.0" /> {/* FSD -> QTA */}
-                <line x1="296.2" y1="122.9" x2="325.9" y2="70.4" />  {/* ISB -> GLT */}
-              </g>
-
-              {/* Interactive Telemetry Hub Nodes */}
-              {TELEMETRY_HUBS.map((hub) => {
-                const isActive = activeHub === hub.id;
-                return (
-                  <g
-                    key={hub.id}
-                    className="cursor-pointer"
-                    onClick={() => setActiveHub(hub.id)}
-                  >
-                    {/* Pulsing ring for primary and active hubs */}
-                    {(hub.primary || isActive) && (
-                      <circle
-                        cx={hub.x}
-                        cy={hub.y}
-                        r="9"
-                        fill="none"
-                        stroke={hub.accent}
-                        strokeWidth="1"
-                        opacity="0.6"
-                        className="animate-ping origin-center"
-                      />
-                    )}
-
-                    {/* Outer core circle */}
-                    <circle
-                      cx={hub.x}
-                      cy={hub.y}
-                      r={hub.primary ? 4.5 : 3.2}
-                      fill={hub.accent}
-                      filter="drop-shadow(0 0 4px rgba(249,115,22,0.8))"
-                    />
-
-                    {/* Inner core dot */}
-                    <circle
-                      cx={hub.x}
-                      cy={hub.y}
-                      r={1.5}
-                      fill="#ffffff"
-                    />
-                  </g>
-                );
-              })}
-            </svg>
+          {/* Corner Crosshairs & Telemetry */}
+          <div className="pointer-events-none absolute top-4 left-4 text-[9px] font-mono text-zinc-500">
+            [EARTH//GLOBAL_MESH_SYS]
           </div>
-
-          {/* Active Hub Telemetry Pill */}
-          <div className="mt-3 w-full max-w-[260px] p-2.5 rounded-xl bg-white/[0.03] border border-white/[0.07] flex items-center justify-between text-xs font-mono">
-            <div className="flex items-center gap-2">
-              <MapPin className="w-3.5 h-3.5 text-orange-400" />
-              <div>
-                <span className="text-white font-semibold block text-[11px]">
-                  {TELEMETRY_HUBS.find((h) => h.id === activeHub)?.name}
-                </span>
-                <span className="text-[10px] text-zinc-400 block">
-                  {TELEMETRY_HUBS.find((h) => h.id === activeHub)?.label}
-                </span>
-              </div>
-            </div>
-            <span className="text-[10px] text-orange-400 font-medium">
-              VERIFIED
-            </span>
+          <div className="pointer-events-none absolute bottom-4 right-4 text-[9px] font-mono text-orange-400">
+            ROTATING 3D SPHERE &bull; LIVE NODES
           </div>
         </div>
-
-        {/* Right Column: Futuristic Digital Network Globe (HTML5 Canvas) */}
-        <div className="md:col-span-6 relative flex flex-col items-center justify-center">
-          <div className="relative w-full aspect-[4/3] max-w-[320px] rounded-2xl overflow-hidden flex items-center justify-center">
-            {/* The 3D Digital Network Globe Canvas */}
-            <canvas
-              ref={canvasRef}
-              className="w-full h-full block"
-              aria-label="3D Spherical Network Globe"
-            />
-
-            {/* Subtle Overlay Telemetry Crosshair Corner Accents */}
-            <div className="pointer-events-none absolute top-2 left-2 text-[9px] font-mono text-zinc-600">
-              SYS//GLOBE_NET
-            </div>
-            <div className="pointer-events-none absolute bottom-2 right-2 text-[9px] font-mono text-orange-400/70">
-              LATENCY &bull; 0ms
-            </div>
-          </div>
-
-          <div className="mt-3 text-center px-2">
-            <span className="text-xs text-zinc-300 font-medium block">
-              Global Open-Source Engineering Standards
-            </span>
-            <p className="text-[11px] text-zinc-500 font-mono mt-0.5 max-w-xs">
-              Rooted in Pakistan&apos;s computational disciplines, aligned with international web best practices.
-            </p>
-          </div>
-        </div>
-
       </div>
 
-      {/* Bottom Architectural Link Bar */}
-      <div className="mt-6 pt-4 border-t border-white/[0.06] flex flex-wrap items-center justify-between text-[11px] font-mono text-zinc-400 gap-2">
+      {/* Active Hub Telemetry Details Bar */}
+      <div className="relative z-20 mt-4 pt-4 border-t border-white/[0.06] flex flex-wrap items-center justify-between text-xs font-mono text-zinc-400 gap-3">
         <div className="flex items-center gap-2">
-          <Compass className="w-3.5 h-3.5 text-orange-400" />
-          <span>Faisalabad &bull; University of Agriculture</span>
+          <MapPin className="w-4 h-4 text-orange-400" />
+          <span className="text-white font-medium">
+            Active Hub: {TELEMETRY_HUBS.find((h) => h.id === activeHub)?.name} &mdash;{" "}
+            <span className="text-zinc-400">
+              {TELEMETRY_HUBS.find((h) => h.id === activeHub)?.label}
+            </span>
+          </span>
         </div>
-        <div className="flex items-center gap-2 text-zinc-400">
-          <Activity className="w-3.5 h-3.5 text-emerald-400" />
-          <span>Saylani Web Trainee &bull; Problem Solver in C++</span>
+
+        <div className="flex items-center gap-2">
+
+          <span className="text-zinc-300">Global Standards Aligned</span>
         </div>
       </div>
     </div>

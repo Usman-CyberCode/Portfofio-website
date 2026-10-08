@@ -230,4 +230,53 @@
   }
 }
 
+/* Cosmic Parallax Background Animations */
+:root {
+  --animation-iteration: infinite;
+}
 
+@keyframes animStar {
+  from {
+    transform: translateY(0px);
+  }
+  to {
+    transform: translateY(-2000px);
+  }
+}
+
+.cosmic-stars {
+  width: 1px;
+  height: 1px;
+  background: transparent;
+  animation: animStar 60s linear infinite;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+.cosmic-stars-medium {
+  width: 2px;
+  height: 2px;
+  background: transparent;
+  animation: animStar 110s linear infinite;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+.cosmic-stars-large {
+  width: 3px;
+  height: 3px;
+  background: transparent;
+  animation: animStar 160s linear infinite;
+  will-change: transform;
+  transform: translate3d(0, 0, 0);
+}
+
+.cosmic-horizon {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 180px;
+  background: radial-gradient(ellipse at 50% 100%, rgba(249, 115, 22, 0.08) 0%, rgba(239, 68, 68, 0.04) 40%, transparent 80%);
+  pointer-events: none;
+}
