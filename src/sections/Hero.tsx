@@ -42,7 +42,7 @@ export function Hero() {
     (s) => s.platform.toLowerCase() === "linkedin"
   );
 
-  const heroTechStack = ["C++", "JavaScript", "TypeScript", "React", "Redux"];
+  const heroTechStack = ["C++", "JavaScript", "TypeScript", "Redux", "HTML/CSS"];
 
   // Interactive 3D tilt for hero portrait
   const photoX = useMotionValue(0);
@@ -136,28 +136,13 @@ export function Hero() {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="lg:col-span-6 flex flex-col items-center lg:items-start text-center lg:text-left order-1"
+            className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left order-2"
           >
-            {/* Status Badge + Profile Avatar Capsule */}
+            {/* Status Badge */}
             <motion.div
               variants={itemVariants}
               className="mb-4 flex flex-wrap items-center justify-center lg:justify-start gap-2.5"
             >
-              <div className="flex items-center gap-2 p-1 pr-3 rounded-full bg-white/[0.04] border border-white/[0.08] backdrop-blur-sm">
-                <div className="relative w-7 h-7 rounded-full overflow-hidden border border-orange-500/40">
-                  <Image
-                    src="/images/profile.jpg"
-                    alt={personalData.name}
-                    fill
-                    sizes="28px"
-                    className="object-cover object-top"
-                  />
-                </div>
-                <span className="text-[11px] font-mono text-zinc-300 font-medium">
-                  Muhammad Usman Tahir
-                </span>
-              </div>
-
               <Badge
                 variant="status"
                 className="py-1 px-3 text-[11px] font-mono gap-2 border-emerald-500/30 bg-emerald-500/10 text-emerald-300 backdrop-blur-sm"
@@ -166,16 +151,16 @@ export function Hero() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                 </span>
-                <span>Seeking Internship</span>
+                <span>Seeking Web Development Internship</span>
               </Badge>
 
               <span className="inline-flex items-center gap-1.5 text-[11px] font-mono text-zinc-400 py-1 px-3 rounded-full bg-white/[0.03] border border-white/[0.08]">
                 <GraduationCap className="h-3 w-3 text-orange-400" />
-                <span>UAF &bull; 5th Sem</span>
+                <span>BSCS &bull; 5th Semester</span>
               </span>
             </motion.div>
 
-            {/* Name Heading with Hollow Text Accent */}
+            {/* Name Heading */}
             <motion.h1
               variants={itemVariants}
               className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-[1.08] mb-3"
@@ -214,7 +199,7 @@ export function Hero() {
               {heroTechStack.map((tech) => (
                 <span
                   key={tech}
-                  className="py-0.5 px-2.5 rounded bg-white/[0.03] border border-white/[0.07] text-zinc-300 hover:border-orange-500/40 transition-colors"
+                  className="py-0.5 px-2.5 rounded bg-white/[0.03] border border-white/[0.07] text-zinc-300"
                 >
                   {tech}
                 </span>
@@ -226,7 +211,7 @@ export function Hero() {
               variants={itemVariants}
               className="relative z-20 flex flex-wrap items-center justify-center lg:justify-start gap-3 w-full sm:w-auto mb-8"
             >
-              <Link href="#projects" className="w-full sm:w-auto">
+              <Link href="#projects">
                 <Button
                   size="lg"
                   variant="default"
@@ -237,7 +222,7 @@ export function Hero() {
                 </Button>
               </Link>
 
-              <Link href="#contact" className="w-full sm:w-auto">
+              <Link href="#contact">
                 <Button
                   size="lg"
                   variant="secondary"
@@ -282,18 +267,6 @@ export function Hero() {
                 </a>
               )}
             </motion.div>
-          </motion.div>
-
-          {/* Right Column: 3D Technology Stack Platform (TechnologyStack3D) */}
-          <motion.div
-            variants={fadeInUp}
-            initial="hidden"
-            animate="visible"
-            className="lg:col-span-6 flex justify-center w-full order-2 relative z-10"
-          >
-            <div className="w-full max-w-[560px]">
-              <TechnologyStack3D />
-            </div>
           </motion.div>
 
         </div>

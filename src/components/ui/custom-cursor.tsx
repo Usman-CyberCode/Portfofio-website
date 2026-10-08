@@ -62,7 +62,7 @@ export function CustomCursor() {
       if (target) {
         const isInteractive = Boolean(
           target.closest(
-            "a, button, input, textarea, select, [role='button'], .cubie, .cubie-face, .cursor-pointer, .interactive-tile"
+            "a, button, input, textarea, select, [role='button'], .cubie, .cubie-face, .cursor-pointer"
           )
         );
         setIsHovered(isInteractive);
@@ -110,8 +110,8 @@ export function CustomCursor() {
       {/* 2. Gyroscopic 3D HUD Reticle with Real Aerodynamic Attitude Tilt */}
       <motion.div
         style={{
-          x: auraX,
-          y: auraY,
+          x: smoothX,
+          y: smoothY,
           translateX: "-50%",
           translateY: "-50%",
           rotateX: smoothTiltX,
