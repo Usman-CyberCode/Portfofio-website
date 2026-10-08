@@ -94,9 +94,9 @@ export function Footer() {
 
         <div
           aria-hidden="true"
-          className="absolute top-6 left-6 lg:left-14 select-none pointer-events-none z-[1] opacity-15 overflow-hidden"
+          className=" absolute top-6 left-6 select-none pointer-events-none z-[1] opacity-15 overflow-hidden"
         >
-          <div className="text-hollow-lg text-7xl sm:text-8xl md:text-9xl lg:text-[90px] font-black tracking-tighter leading-none block" >
+          <div className=" text-hollow-lg text-4xl sm:text-6xl md:text-4xl lg:text-[95px] font-black tracking-tighter leading-none block" >
             MUHAMMAD USMAN TAHIR
           </div>
         </div>

@@ -8,8 +8,6 @@ import { ArrowRight, Send, GraduationCap } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import { GithubIcon, LinkedInIcon } from "@/components/ui/Icons";
-import { WovenCanvas } from "@/components/ui/woven-light-hero";
-import { CursorParticles } from "@/components/ui/cursor-particles";
 import { personalData } from "@/data";
 import { fadeInUp } from "@/animations/motion";
 
@@ -47,12 +45,7 @@ export function Hero() {
   const heroTechStack = ["C++", "JavaScript", "TypeScript", "Redux", "HTML/CSS"];
 
   return (
-    <section className="relative min-h-[95vh] flex flex-col justify-center overflow-hidden bg-[#08080a] px-4 sm:px-6 lg:px-8 pt-32 pb-20">
-
-      {/* 2. Motion Particles Canvas shifted slightly to the right side directly behind the text (Reference 3) */}
-      <div className="absolute top-10 right-0 bottom-0 w-full lg:w-[60vw] max-w-[650px] z-0 pointer-events-none  opacity-60 translate-x-6 sm:translate-x-12">
-        <WovenCanvas className="w-full h-full pointer-events-none" />
-      </div>
+    <section className="relative min-h-[95vh] flex flex-col justify-center overflow-hidden bg-transparent px-4 sm:px-6 lg:px-8 pt-32 pb-20">
 
       {/* 3. Atmospheric Depth Glow */}
       <div

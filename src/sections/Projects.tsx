@@ -10,6 +10,7 @@ import { GithubIcon } from "@/components/ui/Icons";
 import { projectsData, personalData } from "@/data";
 import { fadeInUp, staggerContainer } from "@/animations/motion";
 import { CosmicParallaxBg } from "@/components/ui/parallax-cosmic-background";
+import { TechnologyStack3D } from "@/components/portfolio/technology-stack-3d";
 
 export function Projects() {
   const githubLink = personalData.socialLinks.find(
@@ -39,6 +40,22 @@ export function Projects() {
           titleHighlight="Code Repositories"
           description="Featured builds demonstrating frontend architectures, Redux state containers, and C++ application logic."
         />
+
+        {/* 3D Interactive Mechanical Technology Keyboard Platform */}
+        <motion.div
+          variants={fadeInUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-60px" }}
+          className="mb-14"
+        >
+          <div className="text-center mb-3">
+            <span className="text-[11px] font-mono uppercase tracking-widest text-zinc-400">
+              Interactive Hardware Console &bull; Press Keys or Tilt
+            </span>
+          </div>
+          <TechnologyStack3D />
+        </motion.div>
 
       <motion.div
         variants={staggerContainer}

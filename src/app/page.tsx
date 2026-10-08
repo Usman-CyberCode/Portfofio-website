@@ -1,10 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
+import { WovenCanvas } from "@/components/ui/woven-light-hero";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { Navbar } from "@/components/common/Navbar";
 import { Footer } from "@/components/common/Footer";
 import { Preloader } from "@/components/ui/preloader";
+import { CustomCursor } from "@/components/ui/custom-cursor";
 import {
   Hero,
   About,
@@ -29,20 +31,28 @@ export default function Home() {
 
   return (
     <>
-      {/* 1. Initial Site Load Animation */}
+      {/* 1. Global Custom 3D & Magnetic Cursor */}
+      <CustomCursor />
+
+      {/* 2. Persistent Animated Woven Light Particles Background across all sections */}
+      <div className="fixed top-0 right-0 w-full lg:w-[60vw] max-w-[800px] h-full z-0 pointer-events-none opacity-40 translate-x-4 sm:translate-x-8">
+        <WovenCanvas className="w-full h-full pointer-events-none" />
+      </div>
+
+      {/* 3. Initial Site Load Animation */}
       <Preloader onComplete={() => setLoadingComplete(true)} />
 
-      {/* 2. Top Scroll Progress Indicator Bar */}
+      {/* 4. Top Scroll Progress Indicator Bar */}
       <motion.div
         style={{ scaleX }}
         className="fixed top-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-orange-500 via-amber-500 to-red-500 origin-left z-[9990] pointer-events-none"
       />
 
-      {/* 4. Main Navigation */}
+      {/* 5. Main Navigation */}
       <Navbar />
 
-      {/* 5. Main Application Content Sections */}
-      <main className="min-h-screen bg-black overflow-hidden relative">
+      {/* 6. Main Application Content Sections */}
+      <main className="min-h-screen bg-[#08080a]/80 backdrop-blur-[0.5px] overflow-hidden relative z-10">
         {/* Hero Section with Muhammad Usman Tahir portrait & MorphText */}
         <Hero />
 
