@@ -35,7 +35,7 @@ export default function Home() {
       <CustomCursor />
 
       {/* 2. Persistent Animated Woven Light Particles Background across all sections */}
-      <div className="fixed top-0 right-0 w-full lg:w-[60vw] max-w-[800px] h-full z-0 pointer-events-none opacity-40 translate-x-4 sm:translate-x-8">
+      <div className="fixed top-0 right-0 w-full lg:w-[65vw] max-w-[920px] h-full z-0 pointer-events-none opacity-90 translate-x-2 sm:translate-x-6">
         <WovenCanvas className="w-full h-full pointer-events-none" />
       </div>
 
@@ -61,7 +61,7 @@ export default function Home() {
         }
         transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
         style={{ transformOrigin: "50% 15%", perspective: 1200 }}
-        className="min-h-screen bg-[#08080a]/85 overflow-hidden relative z-10"
+        className="min-h-screen bg-transparent overflow-hidden relative z-10"
       >
         {/* Hero Section with Muhammad Usman Tahir portrait & Hollow Watermark */}
         <Hero />
