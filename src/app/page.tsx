@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { WovenCanvas } from "@/components/ui/woven-light-hero";
+
 import { motion, useScroll, useSpring } from "framer-motion";
 import { Navbar } from "@/components/common/Navbar";
 import { Footer } from "@/components/common/Footer";
@@ -12,7 +12,7 @@ import {
   About,
   Skills,
   Projects,
-  RubiksSection,
+
   Education,
   FocusAreas,
   Contact,
@@ -34,10 +34,6 @@ export default function Home() {
       {/* 1. Global Custom 3D & Magnetic Cursor */}
       <CustomCursor />
 
-      {/* 2. Persistent Animated Woven Light Particles Background across all sections */}
-      <div className="fixed top-0 right-0 w-full lg:w-[65vw] max-w-[920px] h-full z-0 pointer-events-none opacity-90 translate-x-2 sm:translate-x-6">
-        <WovenCanvas className="w-full h-full pointer-events-none" />
-      </div>
 
       {/* 3. Initial Site Load Animation */}
       <Preloader onComplete={() => setLoadingComplete(true)} />
@@ -75,8 +71,6 @@ export default function Home() {
         {/* Practical Projects (Practical Work) with 3D Mechanical Keyboard */}
         <Projects />
 
-        {/* 3D Rubik's Cube Section (Positioned between Practical Work & Academic Journey) */}
-        <RubiksSection />
 
         {/* Academic Journey (Education & Training Timeline) */}
         <Education />
