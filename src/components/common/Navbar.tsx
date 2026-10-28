@@ -3,11 +3,18 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Send, ArrowUpRight } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Menu, X, ArrowRight } from "lucide-react";
 import { Magnetic } from "@/components/ui/magnetic";
 import { GithubIcon, LinkedInIcon } from "@/components/ui/Icons";
-import { personalData, navItems } from "@/data";
+import { personalData } from "@/data";
+
+const referenceNavItems = [
+  { label: "Works", href: "#projects" },
+  { label: "Services", href: "#focus-areas" },
+  { label: "About", href: "#about" },
+  { label: "Skills", href: "#skills" },
+  { label: "Contact", href: "#contact" },
+];
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -19,8 +26,7 @@ export function Navbar() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 25);
 
-      // Section intersection detection
-      const sections = navItems.map((item) => item.href.replace("#", ""));
+      const sections = referenceNavItems.map((item) => item.href.replace("#", ""));
       const scrollPosition = window.scrollY + 180;
 
       for (const sectionId of sections) {
@@ -41,7 +47,6 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close mobile menu on Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && mobileMenuOpen) {
@@ -63,39 +68,30 @@ export function Navbar() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "bg-[#030509]/85 backdrop-blur-xl border-b border-white/[0.08] shadow-2xl shadow-black/60 py-3"
+          ? "bg-[#050508]/85 backdrop-blur-xl border-b border-white/[0.08] shadow-2xl shadow-black/80 py-3"
           : "bg-transparent py-5"
       }`}
     >
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        {/* Brand Monogram with Magnetic attraction */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        {/* Brand Name matching reference screenshot 1 (e.g. Hanzi -> Usman) */}
         <Magnetic strength={0.2}>
           <Link
             href="#"
-            className="flex items-center gap-2.5 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-xl p-1"
+            className="flex items-center gap-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 rounded-xl p-1"
             aria-label="Muhammad Usman Tahir — Home"
           >
-            <div className="h-8 w-8 rounded-xl bg-[#090e1d] border border-white/10 group-hover:border-blue-500/50 flex items-center justify-center font-mono font-bold text-xs text-white transition-colors shadow-[0_0_12px_rgba(37,99,235,0.15)]">
-              <span className="text-blue-400 group-hover:text-blue-300">U</span>
-              <span>T</span>
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs sm:text-sm font-semibold tracking-tight text-white group-hover:text-slate-200 transition-colors">
-                {personalData.name}
-              </span>
-              <span className="text-[10px] font-mono text-slate-400 -mt-0.5">
-                BSCS &bull; Web Dev
-              </span>
-            </div>
+            <span className="text-base sm:text-lg font-bold tracking-tight text-[#ebe8e5] group-hover:text-white transition-colors">
+              Usman
+            </span>
           </Link>
         </Magnetic>
 
-        {/* Desktop Navigation Links with sliding active highlight pill */}
+        {/* Center Desktop Navigation Links matching reference */}
         <nav
-          className="hidden md:flex items-center gap-1 bg-[#070c18]/70 border border-white/[0.08] p-1.5 rounded-full backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.4)]"
+          className="hidden md:flex items-center gap-1.5 bg-white/[0.03] border border-white/[0.08] p-1.5 rounded-full backdrop-blur-md shadow-[0_4px_24px_rgba(0,0,0,0.5)]"
           aria-label="Main Navigation"
         >
-          {navItems.map((item) => {
+          {referenceNavItems.map((item) => {
             const isActive = activeSection === item.href;
             const isHovered = hoveredNav === item.href;
 
@@ -105,25 +101,24 @@ export function Navbar() {
                 href={item.href}
                 onMouseEnter={() => setHoveredNav(item.href)}
                 onMouseLeave={() => setHoveredNav(null)}
-                className={`relative text-xs font-mono px-3.5 py-1.5 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
+                className={`relative text-xs font-mono px-4 py-1.5 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 ${
                   isActive
                     ? "text-white font-medium"
-                    : "text-slate-400 hover:text-slate-200"
+                    : "text-zinc-400 hover:text-zinc-200"
                 }`}
               >
-                {/* Active or hovered pill background */}
                 {isActive && (
                   <motion.div
                     layoutId="navbar-active-pill"
                     transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                    className="absolute inset-0 bg-blue-600/20 border border-blue-400/30 rounded-full z-0 shadow-[0_0_15px_rgba(59,130,246,0.25)]"
+                    className="absolute inset-0 bg-white/[0.08] border border-white/15 rounded-full z-0 shadow-sm"
                   />
                 )}
                 {!isActive && isHovered && (
                   <motion.div
                     layoutId="navbar-hover-pill"
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                    className="absolute inset-0 bg-white/[0.05] rounded-full z-0"
+                    className="absolute inset-0 bg-white/[0.04] rounded-full z-0"
                   />
                 )}
                 <span className="relative z-10">{item.label}</span>
@@ -132,44 +127,15 @@ export function Navbar() {
           })}
         </nav>
 
-        {/* Desktop Actions & Social */}
-        <div className="hidden sm:flex items-center gap-2">
-          {githubLink && (
-            <Magnetic strength={0.3}>
-              <a
-                href={githubLink.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GitHub Profile"
-                className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.06] border border-transparent hover:border-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-              >
-                <GithubIcon className="h-4 w-4" />
-              </a>
-            </Magnetic>
-          )}
-          {linkedinLink && (
-            <Magnetic strength={0.3}>
-              <a
-                href={linkedinLink.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn Profile"
-                className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/[0.06] border border-transparent hover:border-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-              >
-                <LinkedInIcon className="h-4 w-4" />
-              </a>
-            </Magnetic>
-          )}
+        {/* Right CTA Button: Let's talk → matching reference screenshot 1 */}
+        <div className="hidden sm:flex items-center gap-3">
           <Magnetic strength={0.25}>
-            <Link href="#contact" className="focus-visible:outline-none">
-              <Button
-                size="sm"
-                variant="default"
-                className="text-xs h-8.5 px-4 shadow-sm"
-              >
-                <span>Hire Me</span>
-                <Send className="h-3 w-3" />
-              </Button>
+            <Link
+              href="#contact"
+              className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-white/15 bg-white/[0.04] text-xs font-mono text-[#ebe8e5] hover:bg-white/[0.08] hover:border-white/25 transition-all shadow-sm group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+            >
+              <span>Let&apos;s talk</span>
+              <ArrowRight className="h-3 w-3 text-purple-400 group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </Magnetic>
         </div>
@@ -179,7 +145,7 @@ export function Navbar() {
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             type="button"
-            className="p-2 rounded-xl border border-white/10 bg-white/[0.03] text-slate-300 hover:text-white hover:border-blue-500/30 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer"
+            className="p-2 rounded-xl border border-white/10 bg-white/[0.03] text-zinc-300 hover:text-white hover:border-purple-500/30 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 cursor-pointer"
             aria-expanded={mobileMenuOpen}
             aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
           >
@@ -200,11 +166,11 @@ export function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="md:hidden overflow-hidden border-b border-white/[0.08] bg-[#030509]/95 backdrop-blur-2xl"
+            className="md:hidden overflow-hidden border-b border-white/[0.08] bg-[#050508]/95 backdrop-blur-2xl"
           >
             <div className="px-4 py-6 space-y-4 max-w-md mx-auto">
               <div className="flex flex-col space-y-1">
-                {navItems.map((item, idx) => {
+                {referenceNavItems.map((item, idx) => {
                   const isActive = activeSection === item.href;
                   return (
                     <motion.div
@@ -218,8 +184,8 @@ export function Navbar() {
                         onClick={() => setMobileMenuOpen(false)}
                         className={`block px-4 py-2.5 rounded-xl text-sm font-mono transition-colors ${
                           isActive
-                            ? "bg-blue-600/20 text-blue-300 font-medium border border-blue-500/30"
-                            : "text-slate-300 hover:text-white hover:bg-white/[0.04]"
+                            ? "bg-purple-600/20 text-purple-300 font-medium border border-purple-500/30"
+                            : "text-zinc-300 hover:text-white hover:bg-white/[0.04]"
                         }`}
                       >
                         {item.label}
@@ -236,7 +202,7 @@ export function Navbar() {
                       href={githubLink.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-2 rounded-xl border border-white/10 bg-white/[0.02] text-slate-300 hover:text-white"
+                      className="p-2 rounded-xl border border-white/10 bg-white/[0.02] text-zinc-300 hover:text-white"
                       aria-label="GitHub"
                     >
                       <GithubIcon className="h-4 w-4" />
@@ -247,10 +213,10 @@ export function Navbar() {
                       href={linkedinLink.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="p-2 rounded-xl border border-white/10 bg-white/[0.02] text-slate-300 hover:text-white"
+                      className="p-2 rounded-xl border border-white/10 bg-white/[0.02] text-zinc-300 hover:text-white"
                       aria-label="LinkedIn"
                     >
-                      <LinkedInIcon className="h-4 w-4" />
+                      <LinkedInIcon className="h-4 w-4 text-[#38bdf8]" />
                     </a>
                   )}
                 </div>
@@ -258,11 +224,10 @@ export function Navbar() {
                 <Link
                   href="#contact"
                   onClick={() => setMobileMenuOpen(false)}
+                  className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 bg-white/[0.08] text-xs font-mono text-white"
                 >
-                  <Button size="sm" variant="default" className="text-xs">
-                    <span>Contact Me</span>
-                    <Send className="h-3 w-3" />
-                  </Button>
+                  <span>Let&apos;s talk</span>
+                  <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>
             </div>

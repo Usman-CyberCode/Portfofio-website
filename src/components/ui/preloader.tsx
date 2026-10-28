@@ -15,25 +15,39 @@ export function Preloader({ onComplete }: PreloaderProps) {
   useEffect(() => {
     document.body.style.overflow = "hidden";
 
-    // Fast, responsive loading progression taking ~800ms total
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setTimeout(() => {
-            setIsFinished(true);
-            document.body.style.overflow = "";
-            onComplete?.();
-          }, 240);
-          return 100;
-        }
-        const step = Math.floor(Math.random() * 20) + 14;
-        return Math.min(100, prev + step);
-      });
-    }, 42);
+    // Silky smooth, continuous linear progression over ~1.5s
+    const startTime = performance.now();
+    const duration = 1450; // ms
+
+    let animationFrameId: number;
+
+    const animateProgress = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const fraction = Math.min(1, elapsed / duration);
+
+      // Smooth ease-out cubic for realistic velocity that eases into 100%
+      const easeProgress = 1 - Math.pow(1 - fraction, 2.5);
+      const currentPercent = Math.min(100, Math.floor(easeProgress * 100));
+
+      setProgress(currentPercent);
+
+      if (fraction < 1) {
+        animationFrameId = requestAnimationFrame(animateProgress);
+      } else {
+        setProgress(100);
+        // Graceful pause at 100% before cinematic curtain reveal
+        setTimeout(() => {
+          setIsFinished(true);
+          document.body.style.overflow = "";
+          onComplete?.();
+        }, 220);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(animateProgress);
 
     return () => {
-      clearInterval(interval);
+      cancelAnimationFrame(animationFrameId);
       document.body.style.overflow = "";
     };
   }, [onComplete]);
@@ -47,60 +61,65 @@ export function Preloader({ onComplete }: PreloaderProps) {
           exit={{
             y: "-100%",
             opacity: 0.98,
-            transition: { duration: 0.65, ease: [0.76, 0, 0.24, 1] },
+            transition: { duration: 0.85, ease: [0.76, 0, 0.24, 1] },
           }}
-          className="fixed inset-0 z-[100000] bg-[#030509] flex flex-col items-center justify-center p-6 select-none"
+          className="fixed inset-0 z-[100000] bg-[#050508] flex flex-col items-center justify-center p-6 select-none"
         >
-          {/* Subtle Ambient Background Deep Sapphire Glow */}
+          {/* Subtle Ambient Background Dark Purple Glow */}
           <div
             aria-hidden="true"
-            className="absolute w-[500px] h-[500px] rounded-full bg-[radial-gradient(circle,rgba(37,99,235,0.18)_0%,rgba(14,165,233,0.06)_40%,transparent_70%)] blur-3xl pointer-events-none"
+            className="absolute w-[550px] h-[550px] rounded-full bg-[radial-gradient(circle,rgba(88,28,135,0.22)_0%,rgba(30,10,60,0.1)_45%,transparent_75%)] blur-3xl pointer-events-none"
           />
 
           <div className="relative z-10 flex flex-col items-center justify-center max-w-sm w-full text-center">
-            {/* Top Monogram / System Identity */}
-            <div className="mb-4 inline-flex items-center gap-2 px-3 py-1 rounded-full border border-white/10 bg-white/[0.03] text-[11px] font-mono text-slate-400">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-ping" />
+            {/* Top Monogram / System Status Pill */}
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="mb-5 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-white/10 bg-white/[0.03] text-[11px] font-mono text-zinc-400"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               <span>MUT // SYSTEM INITIALIZE</span>
-            </div>
+            </motion.div>
 
             {/* 3D Flip-Fade Text Effect showing 'LOADING' */}
             <div className="mb-2">
               <FlipFadeText
                 words={["LOADING"]}
                 interval={4000}
-                className="min-h-[52px]"
-                textClassName="text-2xl sm:text-3xl font-mono font-extrabold tracking-[0.35em] text-white"
+                className="min-h-[50px]"
+                textClassName="text-2xl sm:text-3xl font-mono font-extrabold tracking-[0.35em] text-[#ebe8e5]"
                 letterDuration={0.4}
-                staggerDelay={0.04}
+                staggerDelay={0.035}
               />
             </div>
 
-            {/* Live Percentage Counter */}
-            <div className="mb-3 font-mono text-xs text-blue-400 tracking-widest font-semibold">
-              {progress.toString().padStart(3, " ")}%
+            {/* Live Percentage Counter with Monospace Precision */}
+            <div className="mb-3.5 font-mono text-xs text-purple-300 tracking-widest font-semibold tabular-nums">
+              {progress.toString().padStart(3, "0")}%
             </div>
 
             {/* Ultra-Smooth Glowing Progress Rail */}
-            <div className="w-52 sm:w-64 h-[2.5px] bg-white/[0.08] rounded-full overflow-hidden relative">
+            <div className="w-56 sm:w-64 h-[2px] bg-white/[0.08] rounded-full overflow-hidden relative">
               <motion.div
-                className="h-full bg-gradient-to-r from-blue-600 via-sky-400 to-indigo-500 rounded-full shadow-[0_0_14px_rgba(59,130,246,0.9)]"
+                className="h-full bg-gradient-to-r from-purple-600 via-indigo-400 to-sky-400 rounded-full shadow-[0_0_16px_rgba(168,85,247,0.8)]"
                 style={{ width: `${progress}%` }}
-                transition={{ ease: "easeOut" }}
+                transition={{ ease: "linear" }}
               />
               <motion.div
-                className="absolute top-0 bottom-0 w-12 bg-gradient-to-r from-transparent via-white to-transparent opacity-80"
+                className="absolute top-0 bottom-0 w-14 bg-gradient-to-r from-transparent via-white to-transparent opacity-75"
                 style={{
-                  left: `calc(${progress}% - 24px)`,
+                  left: `calc(${progress}% - 28px)`,
                 }}
               />
             </div>
 
             {/* Bottom Telemetry Note */}
-            <div className="mt-5 text-[10px] font-mono text-slate-400 flex items-center gap-3">
+            <div className="mt-6 text-[10px] font-mono text-zinc-500 flex items-center gap-3">
               <span>PORTFOLIO v2.0</span>
-              <span className="text-slate-600">&bull;</span>
-              <span className="text-blue-400">READY</span>
+              <span className="text-zinc-700">&bull;</span>
+              <span className="text-purple-400">READY</span>
             </div>
           </div>
         </motion.div>

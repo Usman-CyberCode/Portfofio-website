@@ -15,8 +15,8 @@ interface ScrollRevealProps {
 export function ScrollReveal({
   children,
   delay = 0,
-  duration = 0.7,
-  yOffset = 30,
+  duration = 0.85,
+  yOffset = 45,
   className = "",
   stagger = false,
 }: ScrollRevealProps) {
@@ -30,19 +30,21 @@ export function ScrollReveal({
     hidden: {
       opacity: 0,
       y: yOffset,
-      scale: 0.98,
+      scale: 0.97,
+      filter: "blur(4px)",
     },
     visible: {
       opacity: 1,
       y: 0,
       scale: 1,
+      filter: "blur(0px)",
       transition: {
         duration,
         delay,
-        ease: [0.215, 0.61, 0.355, 1],
+        ease: [0.16, 1, 0.3, 1],
         ...(stagger
           ? {
-              staggerChildren: 0.08,
+              staggerChildren: 0.1,
               delayChildren: delay,
             }
           : {}),
@@ -54,7 +56,7 @@ export function ScrollReveal({
     <motion.div
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-50px" }}
+      viewport={{ once: true, margin: "-60px" }}
       variants={variants}
       className={className}
     >
@@ -62,3 +64,5 @@ export function ScrollReveal({
     </motion.div>
   );
 }
+
+export default ScrollReveal;

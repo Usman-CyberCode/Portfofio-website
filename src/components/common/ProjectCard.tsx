@@ -62,6 +62,11 @@ export function ProjectCard({ project }: ProjectCardProps) {
     cardY.set(0);
   };
 
+  const shineBackground = useTransform(
+    [shineX, shineY],
+    ([x, y]) =>
+      `radial-gradient(circle 260px at ${x}px ${y}px, rgba(96, 165, 250, 0.12), transparent 80%)`
+  );
   return (
     <motion.div
       ref={cardRef}
@@ -77,19 +82,14 @@ export function ProjectCard({ project }: ProjectCardProps) {
       className="developer-panel relative rounded-2xl h-full flex flex-col justify-between group p-6 transition-all duration-300 hover:border-blue-500/40 overflow-hidden bg-[#070c18]/80"
     >
       {/* Specular Mouse-Following Glow / Shine Overlay */}
-      {isHovered && (
-        <motion.div
-          style={{
-            background: useTransform(
-              [shineX, shineY],
-              ([x, y]) =>
-                `radial-gradient(circle 260px at ${x}px ${y}px, rgba(96, 165, 250, 0.12), transparent 75%)`
-            ),
-          }}
-          className="pointer-events-none absolute inset-0 z-10 transition-opacity duration-300"
-        />
-      )}
-
+      {/* Specular Mouse-Following Glow / Shine Overlay */}
+      <motion.div
+        style={{
+          background: shineBackground,
+          opacity: isHovered ? 1 : 0,
+        }}
+        className="pointer-events-none absolute inset-0 z-10 transition-opacity"
+      />
       {/* Featured Border Beam Effect in Deep Sapphire & Cyan */}
       {project.featured && (
         <BorderBeam
