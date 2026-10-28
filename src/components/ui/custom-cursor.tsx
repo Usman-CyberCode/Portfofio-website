@@ -33,8 +33,11 @@ export function CustomCursor() {
   const smoothTiltY = useSpring(tiltY, { damping: 18, stiffness: 200 });
 
   useEffect(() => {
-    // Disable on touch devices
-    if (window.matchMedia("(pointer: coarse)").matches) {
+    // Disable on touch devices or reduced motion
+    if (
+      window.matchMedia("(pointer: coarse)").matches ||
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    ) {
       setIsTouchDevice(true);
       return;
     }
@@ -62,7 +65,7 @@ export function CustomCursor() {
       if (target) {
         const isInteractive = Boolean(
           target.closest(
-            "a, button, input, textarea, select, [role='button'], .cubie, .cubie-face, .cursor-pointer"
+            "a, button, input, textarea, select, [role='button'], .cursor-pointer"
           )
         );
         setIsHovered(isInteractive);
@@ -104,10 +107,10 @@ export function CustomCursor() {
           translateX: "-50%",
           translateY: "-50%",
         }}
-        className="fixed top-0 left-0 w-10 h-10 rounded-full bg-gradient-to-tr from-orange-600/20 via-amber-500/15 to-transparent blur-md"
+        className="fixed top-0 left-0 w-10 h-10 rounded-full bg-gradient-to-tr from-blue-600/20 via-sky-500/15 to-transparent blur-md"
       />
 
-      {/* 2. Gyroscopic 3D HUD Reticle with Real Aerodynamic Attitude Tilt */}
+      {/* 2. Gyroscopic 3D HUD Reticle with Attitude Tilt */}
       <motion.div
         style={{
           x: smoothX,
@@ -120,7 +123,7 @@ export function CustomCursor() {
           transformStyle: "preserve-3d",
         }}
         animate={{
-          scale: isClicked ? 0.75 : isHovered ? 1.85 : 1,
+          scale: isClicked ? 0.75 : isHovered ? 1.75 : 1,
         }}
         transition={{ duration: 0.16, ease: "easeOut" }}
         className="fixed top-0 left-0 w-8 h-8 flex items-center justify-center"
@@ -129,12 +132,12 @@ export function CustomCursor() {
         <div
           className={`absolute inset-0 rounded-full border transition-colors duration-200 ${
             isHovered
-              ? "border-orange-500/80 shadow-[0_0_16px_rgba(249,115,22,0.6)] bg-orange-500/10"
+              ? "border-blue-400/80 shadow-[0_0_16px_rgba(59,130,246,0.6)] bg-blue-500/10"
               : "border-white/25 bg-white/[0.02]"
           }`}
         />
 
-        {/* 3D Rotating Crosshair Ticks */}
+        {/* Rotating Crosshair Ticks */}
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
@@ -142,28 +145,28 @@ export function CustomCursor() {
         >
           <span
             className={`absolute top-0 w-1 h-[2px] rounded-full transition-colors ${
-              isHovered ? "bg-orange-400" : "bg-white/40"
+              isHovered ? "bg-blue-400" : "bg-white/40"
             }`}
           />
           <span
             className={`absolute bottom-0 w-1 h-[2px] rounded-full transition-colors ${
-              isHovered ? "bg-orange-400" : "bg-white/40"
+              isHovered ? "bg-blue-400" : "bg-white/40"
             }`}
           />
           <span
             className={`absolute left-0 h-1 w-[2px] rounded-full transition-colors ${
-              isHovered ? "bg-orange-400" : "bg-white/40"
+              isHovered ? "bg-blue-400" : "bg-white/40"
             }`}
           />
           <span
             className={`absolute right-0 h-1 w-[2px] rounded-full transition-colors ${
-              isHovered ? "bg-orange-400" : "bg-white/40"
+              isHovered ? "bg-blue-400" : "bg-white/40"
             }`}
           />
         </motion.div>
       </motion.div>
 
-      {/* 3. Precision Glowing Plasma Core with 3D Depth Tracking */}
+      {/* 3. Glowing Plasma Core */}
       <motion.div
         style={{
           x: mouseX,
@@ -172,17 +175,16 @@ export function CustomCursor() {
           translateY: "-50%",
         }}
         animate={{
-          scale: isClicked ? 1.4 : isHovered ? 0.6 : 1,
+          scale: isClicked ? 1.3 : isHovered ? 0.6 : 1,
         }}
         transition={{ duration: 0.1, ease: "easeOut" }}
         className="fixed top-0 left-0 flex items-center justify-center"
       >
-        {/* Pulsing Core Energy Orb */}
         <div
           className={`w-2.5 h-2.5 rounded-full transition-all duration-150 ${
             isHovered
-              ? "bg-gradient-to-r from-amber-400 to-orange-500 shadow-[0_0_12px_rgba(249,115,22,1)]"
-              : "bg-white shadow-[0_0_8px_rgba(255,255,255,0.9),0_0_16px_rgba(249,115,22,0.7)]"
+              ? "bg-gradient-to-r from-sky-400 to-blue-500 shadow-[0_0_12px_rgba(59,130,246,1)]"
+              : "bg-white shadow-[0_0_8px_rgba(255,255,255,0.9),0_0_16px_rgba(59,130,246,0.7)]"
           }`}
         />
       </motion.div>
@@ -199,7 +201,7 @@ export function CustomCursor() {
             translateX: "-50%",
             translateY: "-50%",
           }}
-          className="fixed top-0 left-0 w-8 h-8 rounded-full border border-orange-400/80 pointer-events-none"
+          className="fixed top-0 left-0 w-8 h-8 rounded-full border border-blue-400/80 pointer-events-none"
         />
       )}
     </div>

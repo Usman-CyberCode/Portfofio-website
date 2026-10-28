@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -10,6 +10,13 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
 });
 
 export const metadata: Metadata = {
@@ -65,7 +72,7 @@ export const metadata: Metadata = {
 
 
 export const viewport: Viewport = {
-  themeColor: "#08080a",
+  themeColor: "#04060d",
   colorScheme: "dark",
   width: "device-width",
   initialScale: 1,
@@ -79,10 +86,10 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} dark scroll-smooth`}
+      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} dark scroll-smooth`}
     >
-      <body className="min-h-screen bg-[#08080a] text-zinc-100 font-sans antialiased selection:bg-orange-500/30 selection:text-white bg-grid-pattern relative">
-        {/* Ambient Top Glow Layer */}
+      <body className="min-h-screen bg-[#04060d] text-slate-100 font-sans antialiased selection:bg-blue-500/30 selection:text-white bg-grid-pattern relative">
+        {/* Subtle Ambient Radial Vignette Layer */}
         <div className="fixed inset-0 pointer-events-none bg-radial-gradient z-0" />
 
         {/* Main Application Content */}
