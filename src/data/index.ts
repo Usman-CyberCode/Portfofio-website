@@ -124,8 +124,8 @@ export const projectsData: Project[] = [
     featured: true,
     githubUrl:
       "https://github.com/Usman-CyberCode/workspace-manager-hackathon-project",
-    liveUrl: undefined,
-    image: "/images/projects/workspace-manager.svg",
+    liveUrl: "https://workspace-manager-hackathon-project.vercel.app/",
+    image: "/images/projects/workspace-manager.webp",
     metrics: [
       { label: "Role", value: "Frontend Developer" },
       { label: "Context", value: "Hackathon Build" },
@@ -144,7 +144,7 @@ export const projectsData: Project[] = [
     featured: true,
     githubUrl: undefined,
     liveUrl: undefined,
-    image: "/images/projects/atm-clone.svg",
+    image: "/images/projects/atm-clone.webp",
     metrics: [
       { label: "Language", value: "C++17" },
       { label: "Discipline", value: "Algorithms & OOP" },

@@ -145,7 +145,7 @@ export default function AllWorkPage() {
                             alt={`${project.title} Preview Graphic`}
                             fill
                             sizes="(max-width: 1024px) 100vw, 45vw"
-                            className="object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-out"
+                            className="object-cover object-top group-hover:scale-105 transition-transform duration-700 ease-out"
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#090e1c] to-[#04060d]">

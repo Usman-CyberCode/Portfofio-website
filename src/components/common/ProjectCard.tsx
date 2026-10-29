@@ -80,7 +80,11 @@ export function ProjectCard({ project }: ProjectCardProps) {
         perspective: 1000,
         transformStyle: "preserve-3d",
       }}
-      className="developer-panel relative rounded-2xl h-full flex flex-col justify-between group p-6 transition-all duration-300 hover:border-purple-500/40 overflow-hidden bg-[#070c18]/85 shadow-[0_8px_30px_rgba(0,0,0,0.5)]"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-40px" }}
+      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+      className="developer-panel relative rounded-2xl h-full flex flex-col justify-between group p-4 sm:p-6 transition-all duration-300 hover:border-purple-500/40 overflow-hidden bg-[#070c18]/85 shadow-[0_8px_30px_rgba(0,0,0,0.5)]"
     >
       {/* Specular Mouse-Following Glow / Shine Overlay */}
       <motion.div
@@ -103,24 +107,24 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
       <div className="relative z-10">
         {/* Terminal Header Mockup with Visual Preview */}
-        <div className="rounded-xl overflow-hidden mb-5 border border-white/[0.08] bg-[#050812] group/preview">
+        <div className="rounded-xl overflow-hidden mb-4 sm:mb-5 border border-white/[0.08] bg-[#050812] group/preview">
           {/* Terminal Window Controls Bar */}
-          <div className="flex items-center justify-between px-3.5 py-2.5 bg-white/[0.03] border-b border-white/[0.06]">
+          <div className="flex items-center justify-between px-3 py-2 sm:px-3.5 sm:py-2.5 bg-white/[0.03] border-b border-white/[0.06]">
             <div className="flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-red-500/70" />
               <span className="h-2 w-2 rounded-full bg-amber-500/70" />
               <span className="h-2 w-2 rounded-full bg-emerald-500/70" />
             </div>
-            <span className="text-[11px] font-mono text-slate-400 truncate max-w-[180px]">
+            <span className="text-[10px] sm:text-[11px] font-mono text-slate-400 truncate max-w-[150px] sm:max-w-[180px]">
               {fileName}
             </span>
-            <span className="text-[10px] font-mono text-purple-400 uppercase tracking-wider font-medium">
+            <span className="text-[9px] sm:text-[10px] font-mono text-purple-400 uppercase tracking-wider font-medium">
               {project.featured ? "Featured" : "Project"}
             </span>
           </div>
 
-          {/* Graphical Preview Image with Smooth Zoom on Hover */}
-          <div className="relative aspect-[16/9] w-full bg-[#04060d] overflow-hidden">
+          {/* Graphical Preview Image with Smooth Zoom on Hover & Proper Cropping */}
+          <div className="relative aspect-[16/10] w-full bg-[#04060d] overflow-hidden">
             {project.image ? (
               <motion.div
                 animate={{ scale: isHovered ? 1.05 : 1 }}
@@ -129,10 +133,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
               >
                 <Image
                   src={project.image}
-                  alt={`${project.title} Preview`}
+                  alt={`${project.title} Interface Screenshot Preview`}
                   fill
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  className="object-cover object-center"
+                  className="object-cover object-top"
                 />
               </motion.div>
             ) : (
@@ -140,7 +144,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
                 <span className="text-xs font-mono text-slate-400">{project.title}</span>
               </div>
             )}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#070c18] via-transparent to-transparent opacity-40 pointer-events-none" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#070c18] via-transparent to-transparent opacity-30 pointer-events-none" />
           </div>
         </div>
 
