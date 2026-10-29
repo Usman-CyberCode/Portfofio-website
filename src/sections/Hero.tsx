@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useMotionValue, useSpring, useTransform, useReducedMotion } from "framer-motion";
-import { ArrowRight, Send, Sparkles, Terminal, Code2, Cpu } from "lucide-react";
+import { ArrowRight, Send } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { Magnetic } from "@/components/ui/magnetic";
 import { GithubIcon, LinkedInIcon } from "@/components/ui/Icons";
@@ -13,6 +13,15 @@ import { personalData } from "@/data";
 export function Hero() {
   const shouldReduceMotion = useReducedMotion();
   const heroRef = useRef<HTMLDivElement>(null);
+  const [isFloatingActive, setIsFloatingActive] = useState(false);
+
+  // Floating animations begin approximately 2 seconds after page load
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsFloatingActive(true);
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Mouse-follow parallax values for desktop
   const mouseX = useMotionValue(0);
@@ -22,18 +31,23 @@ export function Hero() {
   const smoothMouseX = useSpring(mouseX, springConfig);
   const smoothMouseY = useSpring(mouseY, springConfig);
 
-  // Parallax transforms for floating elements
-  const portraitParallaxX = useTransform(smoothMouseX, [-0.5, 0.5], [-16, 16]);
-  const portraitParallaxY = useTransform(smoothMouseY, [-0.5, 0.5], [-14, 14]);
+  // Parallax transforms for floating elements (subtle, restrained, keeps elements near their anchors)
+  const portraitParallaxX = useTransform(smoothMouseX, [-0.5, 0.5], [-12, 12]);
+  const portraitParallaxY = useTransform(smoothMouseY, [-0.5, 0.5], [-10, 10]);
 
-  const cardParallaxX = useTransform(smoothMouseX, [-0.5, 0.5], [18, -18]);
-  const cardParallaxY = useTransform(smoothMouseY, [-0.5, 0.5], [16, -16]);
-
-  const badgeParallaxX = useTransform(smoothMouseX, [-0.5, 0.5], [-10, 10]);
-  const badgeParallaxY = useTransform(smoothMouseY, [-0.5, 0.5], [10, -10]);
+  const cardParallaxX = useTransform(smoothMouseX, [-0.5, 0.5], [14, -14]);
+  const cardParallaxY = useTransform(smoothMouseY, [-0.5, 0.5], [12, -12]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (shouldReduceMotion || !heroRef.current) return;
+    // Simplify/disable pointer-based parallax on touch devices or reduced motion
+    if (
+      shouldReduceMotion ||
+      !heroRef.current ||
+      "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0
+    ) {
+      return;
+    }
     const rect = heroRef.current.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width - 0.5;
     const y = (e.clientY - rect.top) / rect.height - 0.5;
@@ -95,107 +109,112 @@ export function Hero() {
       {/* 3. Massive Full-Width Typography & Overlapping Editorial Composition */}
       <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col items-center justify-center my-auto py-6 sm:py-10">
 
-        {/* Floating Circular Monochrome Portrait (Left-Center Overlap) */}
+        {/* Floating Circular Monochrome Portrait (Left Flank - Positioned Closer Without Obscuring Heading) */}
         <motion.div
           style={
             shouldReduceMotion
               ? {}
               : {
-                x: portraitParallaxX,
-                y: portraitParallaxY,
-              }
-          }
-          initial={{ opacity: 0, scale: 0.75, y: 35 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 1.1, delay: 0.65, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute left-[3%] sm:left-[6%] lg:left-[20%] -top-[8%] sm:-top-[10%] lg:-top-[12%] z-30"
-        >
-          {/* Continuous gentle floating bobbing */}
-          <motion.div
-            animate={
-              shouldReduceMotion
-                ? {}
-                : {
-                  y: [0, -10, 0],
-                  rotate: [0, 1.5, 0],
+                  x: portraitParallaxX,
+                  y: portraitParallaxY,
                 }
-            }
-            transition={{
-              duration: 5.5,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            whileHover={{ scale: 1.08, rotate: 2 }}
-            className="group cursor-pointer"
+          }
+          className="absolute left-[4%] sm:left-[7%] lg:left-[16%] -top-[4%] sm:-top-[6%] lg:-top-[8%] z-30 pointer-events-auto"
+        >
+          {/* Wrapper 2: Immediate Entrance as Soon as Hero Loads */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.88 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="relative w-24 h-24 sm:w-36 sm:h-36 lg:w-44 lg:h-44 rounded-full overflow-hidden border-2 border-white/20 shadow-2xl shadow-black/90 bg-[#090812]">
-              <Image
-                src="/images/profile.jpg"
-                alt={personalData.name}
-                fill
-                priority
-                quality={100}
-                unoptimized
-                className="object-cover object-top filter grayscale contrast-125 brightness-95 group-hover:scale-105 group-hover:contrast-115 transition-all duration-500"
-              />
-              {/* Subtle specular vignette ring */}
-              <div className="absolute inset-0 rounded-full border border-white/25 pointer-events-none" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
-            </div>
+            {/* Wrapper 3: Gentle Floating Animation Begins ~2s After Page Loads */}
+            <motion.div
+              animate={
+                isFloatingActive && !shouldReduceMotion
+                  ? {
+                      y: [0, -7, 0, 7, 0],
+                      rotate: [0, 1.3, 0, -1.3, 0],
+                    }
+                  : { y: 0, rotate: 0 }
+              }
+              transition={{
+                duration: 5.8,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              whileHover={{ scale: 1.06, rotate: 1.5 }}
+              className="group cursor-pointer"
+            >
+              <div className="relative w-20 h-20 sm:w-28 sm:h-28 lg:w-36 lg:h-36 rounded-full overflow-hidden border-2 border-white/20 shadow-2xl shadow-purple-950/60 bg-[#090812] transition-shadow duration-300 group-hover:border-purple-400/50">
+                <Image
+                  src="/images/profile.webp"
+                  alt={`${personalData.name} — Web Developer`}
+                  fill
+                  priority
+                  sizes="(max-width: 640px) 80px, (max-width: 1024px) 112px, 144px"
+                  className="object-cover object-top filter grayscale contrast-125 brightness-95 group-hover:scale-105 group-hover:contrast-115 transition-all duration-500"
+                />
+                {/* Specular vignette ring */}
+                <div className="absolute inset-0 rounded-full border border-white/25 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none" />
+              </div>
 
-            {/* Small floating developer tag */}
-            <div className="absolute -bottom-2 left-1/2 -translate-x-0/2 px-2.5 py-0.5 rounded-full bg-[#050508]/90 border border-white/15 text-[10px] font-mono text-zinc-300 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap shadow-lg">
-              {personalData.name}
-            </div>
+              {/* Small floating developer tag */}
+              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-[#050508]/90 border border-white/15 text-[10px] font-mono text-zinc-300 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap shadow-lg">
+                {personalData.name}
+              </div>
+            </motion.div>
           </motion.div>
         </motion.div>
 
-        {/* Floating Framed Creative Illustration Card (Right-Center Overlap) */}
+        {/* Floating Framed Creative Illustration Card (Right Flank - Positioned Closer Without Obscuring Heading) */}
         <motion.div
           style={
             shouldReduceMotion
               ? {}
               : {
-                x: cardParallaxX,
-                y: cardParallaxY,
-              }
-          }
-          initial={{ opacity: 0, scale: 0.8, rotate: -6, y: 45 }}
-          animate={{ opacity: 1, scale: 1, rotate: 0, y: 0 }}
-          transition={{ duration: 1.15, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="absolute right-[3%] sm:right-[7%] lg:right-[2%] top-[12%] sm:top-[46%] z-30"
-        >
-          {/* Continuous gentle floating bobbing */}
-          <motion.div
-            animate={
-              shouldReduceMotion
-                ? {}
-                : {
-                  y: [0, 12, 0],
-                  rotate: [0, -2, 0],
+                  x: cardParallaxX,
+                  y: cardParallaxY,
                 }
-            }
-            transition={{
-              duration: 6.8,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-            whileHover={{ scale: 1.06, rotate: -1 }}
-            className="group cursor-pointer"
+          }
+          className="absolute right-[4%] sm:right-[7%] lg:right-[14%] top-[14%] sm:top-[38%] lg:top-[40%] z-30 pointer-events-auto"
+        >
+          {/* Wrapper 2: Immediate Entrance as Soon as Hero Loads */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.88, rotate: -4 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="relative w-28 sm:w-40 lg:w-48 aspect-[4/5] rounded-2xl overflow-hidden border border-white/20 shadow-2xl shadow-purple-950/50 bg-[#080711] backdrop-blur-xl">
-              <Image
-                src="/images/creative-art.jpg"
-                alt="Creative 3D Abstract Digital Art"
-                fill
-                priority
-                quality={95}
-                unoptimized
-                className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#050508]/80 via-transparent to-transparent pointer-events-none" />
-
-            </div>
+            {/* Wrapper 3: Gentle Floating Animation Begins ~2s After Page Loads */}
+            <motion.div
+              animate={
+                isFloatingActive && !shouldReduceMotion
+                  ? {
+                      y: [0, 8, 0, -6, 0],
+                      rotate: [0, -1.8, 0, 1.4, 0],
+                    }
+                  : { y: 0, rotate: 0 }
+              }
+              transition={{
+                duration: 6.8,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+              whileHover={{ scale: 1.06, rotate: -1 }}
+              className="group cursor-pointer"
+            >
+              <div className="relative w-22 sm:w-30 lg:w-36 aspect-[4/5] rounded-2xl overflow-hidden border border-white/20 shadow-2xl shadow-purple-950/50 bg-[#080711] backdrop-blur-xl transition-shadow duration-300 group-hover:border-blue-400/50">
+                <Image
+                  src="/images/creative-art.webp"
+                  alt="Creative 3D Abstract Digital Art"
+                  fill
+                  priority
+                  sizes="(max-width: 640px) 88px, (max-width: 1024px) 120px, 144px"
+                  className="object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#050508]/80 via-transparent to-transparent pointer-events-none" />
+              </div>
+            </motion.div>
           </motion.div>
         </motion.div>
 

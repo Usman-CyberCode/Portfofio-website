@@ -1,16 +1,20 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   GraduationCap,
   Award,
   Calendar,
   MapPin,
+  ArrowRight,
 } from "lucide-react";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { Badge } from "@/components/ui/Badge";
 import { GlowCard } from "@/components/ui/GlowCard";
+import { Button } from "@/components/ui/Button";
+import { Magnetic } from "@/components/ui/magnetic";
 import { educationData, trainingData } from "@/data";
 
 export function Education() {
@@ -170,6 +174,34 @@ export function Education() {
           </motion.div>
         )}
       </div>
+
+      {/* Action: Prominent 'View Full Education' button opening /education in a new tab */}
+      <motion.div
+        initial={shouldReduceMotion ? {} : { opacity: 0, y: 25 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="mt-12 text-center"
+      >
+        <Magnetic strength={0.25}>
+          <Link
+            href="/education"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block"
+          >
+            <Button
+              variant="outline"
+              size="lg"
+              className="gap-2.5 text-xs font-mono border-white/15 hover:border-purple-500/50 hover:bg-purple-500/10 text-zinc-300 hover:text-white group px-7 py-3 rounded-full cursor-pointer"
+            >
+              <GraduationCap className="h-4 w-4 text-purple-400" />
+              <span>View Full Education &amp; Timeline</span>
+              <ArrowRight className="h-3.5 w-3.5 text-purple-400 group-hover:translate-x-1 transition-transform duration-200" />
+            </Button>
+          </Link>
+        </Magnetic>
+      </motion.div>
     </section>
   );
 }

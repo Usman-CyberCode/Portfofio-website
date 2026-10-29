@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useRef, useState } from "react";
+import Image from "next/image";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ExternalLink, FolderGit2, ArrowUpRight, Clock, Code2, Sparkles } from "lucide-react";
+import { ExternalLink, ArrowUpRight, Clock } from "lucide-react";
 import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
 import { GithubIcon } from "@/components/ui/Icons";
 import { BorderBeam } from "@/components/ui/border-beam";
 import { Magnetic } from "@/components/ui/magnetic";
@@ -37,8 +37,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const shineY = useMotionValue(0);
 
   const springConfig = { damping: 22, stiffness: 220, mass: 0.3 };
-  const rotateX = useSpring(useTransform(cardY, [-0.5, 0.5], [8, -8]), springConfig);
-  const rotateY = useSpring(useTransform(cardX, [-0.5, 0.5], [-8, 8]), springConfig);
+  const rotateX = useSpring(useTransform(cardY, [-0.5, 0.5], [6, -6]), springConfig);
+  const rotateY = useSpring(useTransform(cardX, [-0.5, 0.5], [-6, 6]), springConfig);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
@@ -65,8 +65,9 @@ export function ProjectCard({ project }: ProjectCardProps) {
   const shineBackground = useTransform(
     [shineX, shineY],
     ([x, y]) =>
-      `radial-gradient(circle 260px at ${x}px ${y}px, rgba(96, 165, 250, 0.12), transparent 80%)`
+      `radial-gradient(circle 280px at ${x}px ${y}px, rgba(168, 85, 247, 0.12), transparent 75%)`
   );
+
   return (
     <motion.div
       ref={cardRef}
@@ -79,29 +80,29 @@ export function ProjectCard({ project }: ProjectCardProps) {
         perspective: 1000,
         transformStyle: "preserve-3d",
       }}
-      className="developer-panel relative rounded-2xl h-full flex flex-col justify-between group p-6 transition-all duration-300 hover:border-blue-500/40 overflow-hidden bg-[#070c18]/80"
+      className="developer-panel relative rounded-2xl h-full flex flex-col justify-between group p-6 transition-all duration-300 hover:border-purple-500/40 overflow-hidden bg-[#070c18]/85 shadow-[0_8px_30px_rgba(0,0,0,0.5)]"
     >
-      {/* Specular Mouse-Following Glow / Shine Overlay */}
       {/* Specular Mouse-Following Glow / Shine Overlay */}
       <motion.div
         style={{
           background: shineBackground,
           opacity: isHovered ? 1 : 0,
         }}
-        className="pointer-events-none absolute inset-0 z-10 transition-opacity"
+        className="pointer-events-none absolute inset-0 z-10 transition-opacity duration-300"
       />
-      {/* Featured Border Beam Effect in Deep Sapphire & Cyan */}
+
+      {/* Featured Border Beam Effect in Violet & Cyan */}
       {project.featured && (
         <BorderBeam
           size={180}
           duration={10}
-          colorFrom="#3b82f6"
+          colorFrom="#a855f7"
           colorTo="#38bdf8"
         />
       )}
 
       <div className="relative z-10">
-        {/* Terminal Header Mockup with Image/Visual Zoom */}
+        {/* Terminal Header Mockup with Visual Preview */}
         <div className="rounded-xl overflow-hidden mb-5 border border-white/[0.08] bg-[#050812] group/preview">
           {/* Terminal Window Controls Bar */}
           <div className="flex items-center justify-between px-3.5 py-2.5 bg-white/[0.03] border-b border-white/[0.06]">
@@ -113,42 +114,42 @@ export function ProjectCard({ project }: ProjectCardProps) {
             <span className="text-[11px] font-mono text-slate-400 truncate max-w-[180px]">
               {fileName}
             </span>
-            <span className="text-[10px] font-mono text-blue-400 uppercase tracking-wider">
-              {project.featured ? "Featured" : "Build"}
+            <span className="text-[10px] font-mono text-purple-400 uppercase tracking-wider font-medium">
+              {project.featured ? "Featured" : "Project"}
             </span>
           </div>
 
-          {/* Terminal Preview Content Area with Smooth Inner Zoom on Hover */}
-          <div className="p-4 flex items-center justify-between min-h-[96px] bg-gradient-to-b from-[#090e1c] to-[#04060d] overflow-hidden relative">
-            <motion.div
-              animate={{ scale: isHovered ? 1.05 : 1 }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
-              className="flex items-center gap-3.5 w-full relative z-10"
-            >
-              <div className="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400 group-hover:bg-blue-500/20 group-hover:border-blue-400/40 transition-all duration-300">
-                <FolderGit2 className="h-5 w-5" />
+          {/* Graphical Preview Image with Smooth Zoom on Hover */}
+          <div className="relative aspect-[16/9] w-full bg-[#04060d] overflow-hidden">
+            {project.image ? (
+              <motion.div
+                animate={{ scale: isHovered ? 1.05 : 1 }}
+                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                className="w-full h-full relative"
+              >
+                <Image
+                  src={project.image}
+                  alt={`${project.title} Preview`}
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover object-center"
+                />
+              </motion.div>
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[#090e1c] to-[#04060d]">
+                <span className="text-xs font-mono text-slate-400">{project.title}</span>
               </div>
-              <div className="flex flex-col">
-                <span className="text-xs font-semibold text-white group-hover:text-blue-200 transition-colors">
-                  {project.title}
-                </span>
-                <span className="text-[11px] font-mono text-slate-400">
-                  {project.tagline || "Project Repository"}
-                </span>
-              </div>
-            </motion.div>
-
-            {/* Subtle background circuit pattern inside terminal */}
-            <div className="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none" />
+            )}
+            <div className="absolute inset-0 bg-gradient-to-t from-[#070c18] via-transparent to-transparent opacity-40 pointer-events-none" />
           </div>
         </div>
 
         {/* Project Title & Category */}
         <div className="mb-3">
-          <span className="text-[11px] font-mono text-blue-400 uppercase tracking-wider block mb-1">
-            {project.tagline || "Application"}
+          <span className="text-[11px] font-mono text-purple-400 uppercase tracking-wider block mb-1">
+            {project.tagline || "Web Application"}
           </span>
-          <h3 className="text-lg font-bold text-white group-hover:text-blue-100 transition-colors">
+          <h3 className="text-lg font-bold text-white group-hover:text-purple-200 transition-colors">
             {project.title}
           </h3>
         </div>
@@ -162,13 +163,13 @@ export function ProjectCard({ project }: ProjectCardProps) {
         {project.technologies && project.technologies.length > 0 && (
           <div className="mb-6">
             <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block mb-2">
-              Stack &bull; Concepts:
+              Stack &bull; Architecture:
             </span>
             <div className="flex flex-wrap gap-1.5">
               {project.technologies.map((tech) => (
                 <span
                   key={tech}
-                  className="text-[11px] font-mono py-1 px-2.5 rounded-lg bg-white/[0.03] border border-white/[0.08] text-slate-300 group-hover:border-blue-500/25 group-hover:text-slate-100 transition-colors"
+                  className="text-[11px] font-mono py-1 px-2.5 rounded-lg bg-white/[0.03] border border-white/[0.08] text-slate-300 group-hover:border-purple-500/25 group-hover:text-slate-100 transition-colors"
                 >
                   {tech}
                 </span>
@@ -191,19 +192,19 @@ export function ProjectCard({ project }: ProjectCardProps) {
               <Button
                 variant="secondary"
                 size="sm"
-                className="w-full text-xs font-mono justify-between group/btn hover:border-blue-500/40 hover:text-white"
+                className="w-full text-xs font-mono justify-between group/btn hover:border-purple-500/40 hover:text-white"
               >
                 <span className="flex items-center gap-1.5">
                   <GithubIcon className="h-3.5 w-3.5" />
-                  <span>Source Code</span>
+                  <span>GitHub Repository</span>
                 </span>
-                <ArrowUpRight className="h-3.5 w-3.5 text-slate-400 group-hover/btn:text-blue-400 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
+                <ArrowUpRight className="h-3.5 w-3.5 text-slate-400 group-hover/btn:text-purple-400 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
               </Button>
             </a>
           </Magnetic>
         ) : (
           <div className="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg border border-dashed border-white/10 bg-white/[0.02] text-xs text-slate-400 font-mono">
-            <Clock className="h-3 w-3 text-slate-400" />
+            <Clock className="h-3 w-3 text-purple-400/80" />
             <span>Repository link to be updated</span>
           </div>
         )}

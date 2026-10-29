@@ -9,11 +9,11 @@ import { GithubIcon, LinkedInIcon } from "@/components/ui/Icons";
 import { personalData } from "@/data";
 
 const referenceNavItems = [
-  { label: "Works", href: "#projects" },
-  { label: "Services", href: "#focus-areas" },
-  { label: "About", href: "#about" },
-  { label: "Skills", href: "#skills" },
-  { label: "Contact", href: "#contact" },
+  { label: "Works", href: "/#projects", sectionId: "projects" },
+  { label: "Services", href: "/#focus-areas", sectionId: "focus-areas" },
+  { label: "About", href: "/#about", sectionId: "about" },
+  { label: "Skills", href: "/#skills", sectionId: "skills" },
+  { label: "Contact", href: "/#contact", sectionId: "contact" },
 ];
 
 export function Navbar() {
@@ -26,7 +26,7 @@ export function Navbar() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 25);
 
-      const sections = referenceNavItems.map((item) => item.href.replace("#", ""));
+      const sections = referenceNavItems.map((item) => item.sectionId);
       const scrollPosition = window.scrollY + 180;
 
       for (const sectionId of sections) {
@@ -35,7 +35,7 @@ export function Navbar() {
           const top = el.offsetTop;
           const height = el.offsetHeight;
           if (scrollPosition >= top && scrollPosition < top + height) {
-            setActiveSection(`#${sectionId}`);
+            setActiveSection(sectionId);
             break;
           }
         }
@@ -76,7 +76,7 @@ export function Navbar() {
         {/* Brand Name matching reference screenshot 1 (e.g. Hanzi -> Usman) */}
         <Magnetic strength={0.2}>
           <Link
-            href="#"
+            href="/"
             className="flex items-center gap-2 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 rounded-xl p-1"
             aria-label="Muhammad Usman Tahir — Home"
           >
@@ -92,7 +92,7 @@ export function Navbar() {
           aria-label="Main Navigation"
         >
           {referenceNavItems.map((item) => {
-            const isActive = activeSection === item.href;
+            const isActive = activeSection === item.sectionId;
             const isHovered = hoveredNav === item.href;
 
             return (
@@ -131,7 +131,7 @@ export function Navbar() {
         <div className="hidden sm:flex items-center gap-3">
           <Magnetic strength={0.25}>
             <Link
-              href="#contact"
+              href="/#contact"
               className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-white/15 bg-white/[0.04] text-xs font-mono text-[#ebe8e5] hover:bg-white/[0.08] hover:border-white/25 transition-all shadow-sm group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
             >
               <span>Let&apos;s talk</span>
@@ -171,7 +171,7 @@ export function Navbar() {
             <div className="px-4 py-6 space-y-4 max-w-md mx-auto">
               <div className="flex flex-col space-y-1">
                 {referenceNavItems.map((item, idx) => {
-                  const isActive = activeSection === item.href;
+                  const isActive = activeSection === item.sectionId;
                   return (
                     <motion.div
                       key={item.href}
@@ -222,7 +222,7 @@ export function Navbar() {
                 </div>
 
                 <Link
-                  href="#contact"
+                  href="/#contact"
                   onClick={() => setMobileMenuOpen(false)}
                   className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20 bg-white/[0.08] text-xs font-mono text-white"
                 >

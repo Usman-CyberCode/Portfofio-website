@@ -121,7 +121,8 @@ export function Contact() {
 
               {/* Primary Email Card with 1-click Copy & Animated Feedback */}
               <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.08] mb-4 hover:border-purple-500/30 transition-colors">
-                <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 block mb-1">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 flex items-center gap-1.5 mb-1">
+                  <Mail className="h-3 w-3 text-purple-400" />
                   Primary Email
                 </span>
                 <div className="flex items-center justify-between gap-2 mt-1">

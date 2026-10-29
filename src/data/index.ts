@@ -44,9 +44,9 @@ export const educationData: EducationItem[] = [
     currentSemester: "5th Semester",
     cgpa: "3.4 / 4.0",
     location: "Faisalabad, Punjab, Pakistan",
-    period: "Currently Enrolled (5th Semester)",
+    period: "2022 - Present (5th Semester)",
     details:
-      "Pursuing computer science degree with academic focus on programming fundamentals, object-oriented programming, and data structures & algorithms.",
+      "Pursuing a formal Bachelor of Science in Computer Science with a strong academic record (CGPA 3.4/4.0). Coursework emphasizes theoretical and applied computer science: Programming Fundamentals, Object-Oriented Programming (OOP) in C++, Data Structures & Algorithms (DSA), Discrete Mathematics, and Software Design.",
   },
 ];
 
@@ -56,8 +56,8 @@ export const trainingData: TrainingItem[] = [
     title: "Web Development Training",
     institution: "Saylani Welfare Trust",
     description:
-      "Completed practical web development training focused on frontend development, coding fundamentals, and projects.",
-    period: "Practical Training",
+      "Completed rigorous hands-on frontend web development training. Built real-world practical projects emphasizing semantic markup, modern responsive CSS layouts, interactive JavaScript ES6+, React component architecture, and Git team workflows.",
+    period: "Professional Web Training",
   },
 ];
 
@@ -117,119 +117,199 @@ export const projectsData: Project[] = [
     title: "Workspace Manager Hackathon",
     tagline: "Hackathon Web Project",
     description:
-      "Developed a workspace management web project with a modern, responsive interface.",
-    technologies: ["Web Technologies", "Responsive Design"],
+      "A collaborative workspace management web interface developed during a hackathon. Features responsive dashboard views, project boards, and task categorization.",
+    detailedDescription:
+      "Built for a competitive hackathon setting, Workspace Manager focuses on ergonomic workspace orchestration. Developed with modern responsive web standards, it provides users with clean project tracking cards, structured activity boards, and seamless mobile-to-desktop flexibility.",
+    technologies: ["React / Next.js", "TypeScript", "Responsive Design", "Tailwind CSS"],
     featured: true,
     githubUrl:
       "https://github.com/Usman-CyberCode/workspace-manager-hackathon-project",
     liveUrl: undefined,
+    image: "/images/projects/workspace-manager.svg",
+    metrics: [
+      { label: "Role", value: "Frontend Developer" },
+      { label: "Context", value: "Hackathon Build" },
+      { label: "Architecture", value: "Component-Driven" },
+    ],
+  },
+  {
+    id: "atm-clone",
+    title: "ATM Clone",
+    tagline: "C++ Application System",
+    description:
+      "A complete ATM banking simulation engineered in C++. Implements secure PIN authentication, real-time balance queries, cash deposits, withdrawals, and ledger audit logging.",
+    detailedDescription:
+      "Constructed using solid Object-Oriented Programming (OOP) and procedural logic in C++. Simulates real-world ATM transaction workflows with input validation, guard conditions against overdrafts, and structured state persistence across account transactions.",
+    technologies: ["C++", "OOP Principles", "Data Structures", "CLI Architecture"],
+    featured: true,
+    githubUrl: undefined,
+    liveUrl: undefined,
+    image: "/images/projects/atm-clone.svg",
+    metrics: [
+      { label: "Language", value: "C++17" },
+      { label: "Discipline", value: "Algorithms & OOP" },
+      { label: "Core Feature", value: "Ledger Audit Trail" },
+    ],
   },
   {
     id: "redux-counter",
     title: "Redux Counter",
     tagline: "State Management Implementation",
     description:
-      "Built a state-management application implementing Redux for predictable state handling and interactive counter mechanics.",
-    technologies: ["Redux / Redux Toolkit", "JavaScript"],
+      "A dedicated state-management application built to demonstrate unidirectional data flow, predictable store slices, and immutable state updates with Redux Toolkit.",
+    detailedDescription:
+      "Engineered to master state architecture in complex frontends. Features slice definitions, typed actions, custom numeric increment/decrement payloads, reset triggers, and architectural segregation between UI components and the centralized global store.",
+    technologies: ["Redux / Redux Toolkit", "JavaScript", "React", "State Architecture"],
     featured: true,
     githubUrl: "https://github.com/Usman-CyberCode/redux-counter",
     liveUrl: undefined,
-  },
-  {
-    id: "atm-clone",
-    title: "ATM Clone",
-    tagline: "Application System",
-    description:
-      "Built an ATM clone with login, balance, deposit, withdrawal, and transaction history functionality.",
-    technologies: ["C++", "Programming Fundamentals"],
-    featured: false,
-    githubUrl: undefined, // No link provided yet
-    liveUrl: undefined,
+    image: "/images/projects/redux-counter.svg",
+    metrics: [
+      { label: "Pattern", value: "Unidirectional Flow" },
+      { label: "Library", value: "Redux Toolkit" },
+      { label: "State", value: "Immutable Slices" },
+    ],
   },
   {
     id: "personal-portfolio-website",
     title: "Personal Portfolio Website",
     tagline: "Responsive Web Showcase",
     description:
-      "Created a responsive portfolio website showcasing skills, education, and projects.",
-    technologies: ["TypeScript", "HTML", "CSS"],
+      "A high-performance personal developer portfolio built with Next.js, Framer Motion, and Tailwind CSS. Features dark-mode elegance, fluid animations, and responsive grids.",
+    detailedDescription:
+      "Designed and coded to present university computer science coursework, Saylani web development training, and frontend projects in an editorial dark aesthetic. Incorporates 3D card tilt physics, subtle particle backgrounds, and accessible responsive layouts.",
+    technologies: ["Next.js", "TypeScript", "Framer Motion", "Tailwind CSS"],
     featured: false,
-    githubUrl: undefined, // No link provided yet
+    githubUrl: undefined,
     liveUrl: undefined,
+    image: "/images/projects/portfolio.svg",
+    metrics: [
+      { label: "Design", value: "Dark Editorial" },
+      { label: "Performance", value: "Static Pre-rendering" },
+      { label: "Accessibility", value: "Reduced Motion" },
+    ],
   },
   {
     id: "todo-list-app",
     title: "To-Do List Web Application",
     tagline: "Task Management Application",
     description:
-      "Built a task-management application with add, delete, and mark-as-complete functionality.",
-    technologies: ["JavaScript", "HTML", "CSS"],
+      "A responsive task-management web app with task creation, real-time status filtering (All, Active, Completed), and persistent local state.",
+    detailedDescription:
+      "Created during foundational frontend training to exercise DOM manipulation, array operations, event delegation, and interactive interface states. Provides instant feedback with task completion strikes and counter badges.",
+    technologies: ["JavaScript", "HTML5", "CSS3", "DOM Manipulation"],
     featured: false,
-    githubUrl: undefined, // No link provided yet
+    githubUrl: undefined,
     liveUrl: undefined,
+    image: "/images/projects/todo-list.svg",
+    metrics: [
+      { label: "Interface", value: "Dynamic Filtering" },
+      { label: "State", value: "Interactive DOM" },
+      { label: "Focus", value: "Core JavaScript" },
+    ],
   },
 ];
 
 export const focusAreasData: ServiceItem[] = [
   {
-    id: "frontend-development",
-    title: "Frontend Web Development",
+    id: "responsive-website-development",
+    title: "Responsive Website Development",
+    shortDescription: "Mobile-first websites that adapt smoothly across all screen sizes.",
     description:
-      "Constructing clean, structured web applications utilizing HTML, CSS, JavaScript, and TypeScript with attention to code maintainability.",
+      "Developing websites with fluid responsive layouts that look sharp and function cleanly from 320px mobile screens to large desktop monitors.",
     capabilities: [
-      "Semantic HTML & modern CSS layouts",
-      "Interactive JavaScript & TypeScript scripting",
-      "Component-based development mindset",
+      "Mobile-first responsive layout architecture",
+      "Modern CSS Flexbox and CSS Grid implementations",
+      "Touch-friendly navigation and cross-device testing",
+      "Fast-loading, lightweight page structure",
     ],
-    icon: "code",
-  },
-  {
-    id: "responsive-interfaces",
-    title: "Responsive Web Interfaces",
-    description:
-      "Crafting user interfaces that adapt fluently across desktop monitors, laptops, tablets, and smartphones.",
-    capabilities: [
-      "Mobile-first responsive design",
-      "Flexbox and CSS Grid layout structures",
-      "Smooth visual transitions and accessibility",
+    deliverables: [
+      "Fully responsive multi-breakpoint layouts",
+      "Cross-browser tested HTML/CSS code",
+      "Clean mobile drawer and navigation menus",
     ],
     icon: "layout",
+    highlighted: true,
+  },
+  {
+    id: "frontend-ui-implementation",
+    title: "Frontend UI Implementation",
+    shortDescription: "Translating mockups and designs into clean, semantic web interfaces.",
+    description:
+      "Turning visual concepts into pixel-accurate, accessible, and structured code using semantic HTML5, modern CSS, JavaScript, and TypeScript.",
+    capabilities: [
+      "Semantic HTML5 tags and accessible document flow",
+      "Tailwind CSS utility styling with consistent design tokens",
+      "Component-driven architecture for clean reusability",
+      "Structured typing with TypeScript for fewer bugs",
+    ],
+    deliverables: [
+      "Modular, maintainable frontend components",
+      "Accessible markup with keyboard navigation",
+      "Type-safe component interfaces",
+    ],
+    icon: "code",
+    highlighted: true,
+  },
+  {
+    id: "interactive-interfaces",
+    title: "Interactive Interfaces",
+    shortDescription: "Polished micro-animations, form feedback, and reactive state.",
+    description:
+      "Adding purposeful interactivity such as smooth hover states, scroll-triggered reveals, interactive tabs, and feedback notifications that enhance usability.",
+    capabilities: [
+      "Micro-animations with CSS and Framer Motion",
+      "Interactive state handling with JavaScript and Redux",
+      "Accessible modal, dropdown, and tab interactions",
+      "Full support for prefers-reduced-motion preferences",
+    ],
+    deliverables: [
+      "Subtle, purposeful motion design",
+      "Interactive forms with real-time feedback",
+      "Spring-physics button and card states",
+    ],
+    icon: "sparkles",
+    highlighted: true,
+  },
+  {
+    id: "website-improvements",
+    title: "Website Improvements & Fixes",
+    shortDescription: "Code cleanup, layout bug fixing, and asset optimization.",
+    description:
+      "Improving existing web pages by fixing broken responsive layouts, eliminating horizontal scroll overflows, compressing heavy assets, and refining typography.",
+    capabilities: [
+      "Diagnosing and fixing responsive layout overflow bugs",
+      "Image optimization with WebP formats and proper sizing",
+      "Cleaning up cluttered CSS and consolidating classes",
+      "Typography hierarchy and spacing system alignment",
+    ],
+    deliverables: [
+      "Responsive bug fixes across 320px-1440px",
+      "Optimized WebP/SVG asset delivery",
+      "Streamlined, maintainable code structure",
+    ],
+    icon: "layers",
+    highlighted: false,
   },
   {
     id: "basic-react-nextjs",
-    title: "Basic React / Next.js Development",
+    title: "Basic React & Next.js Development",
+    shortDescription: "Single-page apps and static site development with modern tools.",
     description:
-      "Building modular, modern UI components and single-page experiences using React and Next.js ecosystems.",
+      "Building clean component trees, setting up client/server boundaries, configuring routes, and managing predictable state using React and Next.js.",
     capabilities: [
-      "Component breakdown and props flow",
-      "Modern routing and responsive styling",
-      "Integration of interactive state",
+      "Component breakdown, prop typing, and state lifting",
+      "Next.js App Router static page generation",
+      "Redux / Redux Toolkit predictable state architecture",
+      "Version-controlled workflows with Git and GitHub",
     ],
-    icon: "layers",
-  },
-  {
-    id: "portfolio-websites",
-    title: "Portfolio Websites",
-    description:
-      "Designing responsive personal and developer portfolios that clearly present academic background, skills, and projects.",
-    capabilities: [
-      "Tailored layout & modern typography",
-      "Curated project presentation cards",
-      "Fast, lightweight performance",
+    deliverables: [
+      "Fast static Next.js production builds",
+      "State-connected UI components",
+      "Well-documented Git commit history",
     ],
     icon: "globe",
-  },
-  {
-    id: "learning-focused-projects",
-    title: "Learning-Focused Web Projects",
-    description:
-      "Passionate about diving into team hackathons, collaborative codebases, and internship tasks to solve real-world problems.",
-    capabilities: [
-      "Rapidly adopting new technologies and tools",
-      "C++ algorithmic thinking & problem solving",
-      "Version control workflows using Git & GitHub",
-    ],
-    icon: "sparkles",
+    highlighted: false,
   },
 ];
 

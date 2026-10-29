@@ -1,20 +1,39 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import React, { useEffect, useState, useRef, useSyncExternalStore } from "react";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 
 export function CustomCursor() {
   const [isVisible, setIsVisible] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [isClicked, setIsClicked] = useState(false);
-  const [isTouchDevice, setIsTouchDevice] = useState(false);
+
+  // Accessible touch & reduced motion detection
+  const isTouchOrReduced = useSyncExternalStore(
+    (callback) => {
+      if (typeof window === "undefined") return () => {};
+      const q1 = window.matchMedia("(pointer: coarse)");
+      const q2 = window.matchMedia("(prefers-reduced-motion: reduce)");
+      q1.addEventListener("change", callback);
+      q2.addEventListener("change", callback);
+      return () => {
+        q1.removeEventListener("change", callback);
+        q2.removeEventListener("change", callback);
+      };
+    },
+    () =>
+      typeof window !== "undefined" &&
+      (window.matchMedia("(pointer: coarse)").matches ||
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches),
+    () => false
+  );
 
   // Raw mouse coordinates
   const mouseX = useMotionValue(-100);
   const mouseY = useMotionValue(-100);
 
-  // Velocity tracking for 3D attitude tilt
-  const prevPos = useRef({ x: -100, y: -100, time: Date.now() });
+  // Velocity tracking for 3D attitude tilt (pure ref initialization)
+  const prevPos = useRef({ x: -100, y: -100, time: 0 });
   const tiltX = useMotionValue(0);
   const tiltY = useMotionValue(0);
 
@@ -33,18 +52,11 @@ export function CustomCursor() {
   const smoothTiltY = useSpring(tiltY, { damping: 18, stiffness: 200 });
 
   useEffect(() => {
-    // Disable on touch devices or reduced motion
-    if (
-      window.matchMedia("(pointer: coarse)").matches ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      setIsTouchDevice(true);
-      return;
-    }
+    if (isTouchOrReduced) return;
 
     const handleMouseMove = (e: MouseEvent) => {
       const now = Date.now();
-      const dt = Math.max(1, now - prevPos.current.time);
+      const dt = Math.max(1, now - (prevPos.current.time || now));
       const vx = (e.clientX - prevPos.current.x) / dt;
       const vy = (e.clientY - prevPos.current.y) / dt;
 
@@ -90,9 +102,9 @@ export function CustomCursor() {
       document.removeEventListener("mouseleave", handleMouseLeave);
       document.removeEventListener("mouseenter", handleMouseEnter);
     };
-  }, [mouseX, mouseY, tiltX, tiltY, isVisible]);
+  }, [mouseX, mouseY, tiltX, tiltY, isVisible, isTouchOrReduced]);
 
-  if (isTouchDevice || !isVisible) return null;
+  if (isTouchOrReduced || !isVisible) return null;
 
   return (
     <div

@@ -1,10 +1,13 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { Code2, Layout, Layers, Globe, Sparkles, Check, ArrowUpRight } from "lucide-react";
+import { Code2, Layout, Layers, Globe, Sparkles, Check, ArrowRight } from "lucide-react";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { GlowCard } from "@/components/ui/GlowCard";
+import { Button } from "@/components/ui/Button";
+import { Magnetic } from "@/components/ui/magnetic";
 import { focusAreasData } from "@/data";
 
 const serviceIcons: Record<string, React.ElementType> = {
@@ -18,6 +21,9 @@ const serviceIcons: Record<string, React.ElementType> = {
 export function FocusAreas() {
   const shouldReduceMotion = useReducedMotion();
 
+  // Show 3 featured services on the homepage
+  const featuredServices = focusAreasData.filter((s) => s.highlighted).slice(0, 3);
+
   return (
     <section id="focus-areas" className="py-28 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto relative">
       {/* Background ambient lighting */}
@@ -29,15 +35,15 @@ export function FocusAreas() {
       {/* Reference-matching editorial split header */}
       <SectionHeader
         align="split"
-        badgeText="Capabilities"
+        badgeText="Core Services"
         title="Services"
         serifAccent="Services"
-        description="From architecture to final deployment, five key ways I contribute to engineering teams and real-world projects."
+        description="Focused frontend engineering and interface development tailored for web applications, portfolio builds, and internship contributions."
       />
 
       {/* Cards with distinct scroll reveal */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {focusAreasData.map((item, idx) => {
+        {featuredServices.map((item, idx) => {
           const Icon = item.icon ? serviceIcons[item.icon] || Code2 : Code2;
 
           return (
@@ -46,12 +52,12 @@ export function FocusAreas() {
               initial={
                 shouldReduceMotion
                   ? {}
-                  : { opacity: 0, y: 50, filter: "blur(6px)", scale: 0.96 }
+                  : { opacity: 0, y: 45, filter: "blur(6px)", scale: 0.96 }
               }
               whileInView={{ opacity: 1, y: 0, filter: "blur(0px)", scale: 1 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{
-                duration: 0.85,
+                duration: 0.8,
                 delay: idx * 0.1,
                 ease: [0.16, 1, 0.3, 1],
               }}
@@ -92,13 +98,41 @@ export function FocusAreas() {
 
                 <div className="mt-6 pt-3 border-t border-white/[0.06] text-[10px] font-mono text-zinc-500 flex items-center justify-between">
                   <span>Scope: Web &amp; Internship</span>
-                  <span className="text-purple-400/90 font-medium">Active Interest</span>
+                  <span className="text-purple-400/90 font-medium">Available</span>
                 </div>
               </GlowCard>
             </motion.div>
           );
         })}
       </div>
+
+      {/* Action: Prominent 'View All Services' button opening /services in a new tab */}
+      <motion.div
+        initial={shouldReduceMotion ? {} : { opacity: 0, y: 25 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="mt-12 text-center"
+      >
+        <Magnetic strength={0.25}>
+          <Link
+            href="/services"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block"
+          >
+            <Button
+              variant="outline"
+              size="lg"
+              className="gap-2.5 text-xs font-mono border-white/15 hover:border-purple-500/50 hover:bg-purple-500/10 text-zinc-300 hover:text-white group px-7 py-3 rounded-full cursor-pointer"
+            >
+              <Layers className="h-4 w-4 text-purple-400" />
+              <span>View All Services</span>
+              <ArrowRight className="h-3.5 w-3.5 text-purple-400 group-hover:translate-x-1 transition-transform duration-200" />
+            </Button>
+          </Link>
+        </Magnetic>
+      </motion.div>
     </section>
   );
 }

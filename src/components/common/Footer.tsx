@@ -5,7 +5,15 @@ import Link from "next/link";
 import { ArrowUp } from "lucide-react";
 import { GithubIcon, LinkedInIcon } from "@/components/ui/Icons";
 import { Magnetic } from "@/components/ui/magnetic";
-import { personalData, navItems } from "@/data";
+import { personalData } from "@/data";
+
+const dedicatedLinks = [
+  { label: "All Work", href: "/work" },
+  { label: "Services", href: "/services" },
+  { label: "About Dossier", href: "/about" },
+  { label: "Skills Matrix", href: "/skills" },
+  { label: "Full Education", href: "/education" },
+];
 
 export function Footer() {
   const scrollToTop = () => {
@@ -26,7 +34,7 @@ export function Footer() {
           {/* Identity */}
           <div>
             <div className="flex items-center gap-2.5">
-              <div className="h-7 w-7 rounded-lg bg-[#070c18] border border-white/10 flex items-center justify-center font-mono font-bold text-xs text-blue-400">
+              <div className="h-7 w-7 rounded-lg bg-[#070c18] border border-purple-500/30 flex items-center justify-center font-mono font-bold text-xs text-purple-400 shadow-[0_0_12px_rgba(168,85,247,0.25)]">
                 UT
               </div>
               <span className="text-sm font-semibold text-white">
@@ -87,32 +95,42 @@ export function Footer() {
             <button
               onClick={scrollToTop}
               type="button"
-              className="flex items-center gap-1.5 text-xs font-mono text-slate-400 hover:text-white py-2 px-3.5 rounded-xl border border-white/10 hover:border-blue-500/40 bg-white/[0.02] hover:bg-blue-500/10 transition-colors cursor-pointer"
+              className="flex items-center gap-2 text-xs font-mono text-slate-400 hover:text-white py-2 px-3.5 rounded-xl border border-white/10 hover:border-purple-500/40 bg-white/[0.02] hover:bg-purple-500/10 transition-colors cursor-pointer"
               aria-label="Scroll back to top"
             >
               <span>Top</span>
-              <ArrowUp className="h-3.5 w-3.5 text-blue-400" />
+              <ArrowUp className="h-3.5 w-3.5 text-purple-400" />
             </button>
           </Magnetic>
         </div>
 
-        {/* Ambient watermark behind footer */}
-        <div
-          aria-hidden="true"
-          className="select-none pointer-events-none opacity-5 overflow-hidden my-6"
-        >
-          <div className="text-hollow-lg text-4xl sm:text-6xl md:text-7xl lg:text-[88px] font-black tracking-tighter leading-none block">
-            MUHAMMAD USMAN TAHIR
+        {/* Dedicated Pages Navigation Bar */}
+        <div className="py-6 flex flex-wrap items-center justify-between gap-4 border-b border-white/[0.06] text-xs font-mono">
+          <span className="text-zinc-500 uppercase tracking-wider text-[10px]">
+            Dedicated Portals:
+          </span>
+          <div className="flex flex-wrap items-center gap-3 sm:gap-6">
+            {dedicatedLinks.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-zinc-400 hover:text-purple-300 transition-colors"
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-4 flex flex-col sm:flex-row items-center justify-between text-[11px] font-mono text-slate-500 gap-2">
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between text-[11px] font-mono text-slate-500 gap-2">
           <p>
             &copy; {new Date().getFullYear()} {personalData.name}. All rights reserved.
           </p>
           <p>
-            Pakistan &bull; BSCS 5th Semester
+            BSCS Undergraduate &bull; Saylani Welfare Trust Trainee
           </p>
         </div>
       </div>

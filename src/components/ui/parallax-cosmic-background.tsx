@@ -42,32 +42,25 @@ const CosmicParallaxBg: React.FC<CosmicParallaxBgProps> = ({
   className = "",
   showText = false,
 }) => {
-  const [smallStars, setSmallStars] = useState<string>("");
-  const [mediumStars, setMediumStars] = useState<string>("");
-  const [bigStars, setBigStars] = useState<string>("");
-
-  // Split the text by commas and trim whitespace
-  const textParts = text ? text.split(",").map((part) => part.trim()) : [];
-
   // Generate random star positions
   const generateStarBoxShadow = (count: number): string => {
     const shadows = [];
-
     for (let i = 0; i < count; i++) {
       const x = Math.floor(Math.random() * 2000);
       const y = Math.floor(Math.random() * 2000);
       shadows.push(`${x}px ${y}px rgba(255, 255, 255, 0.85)`);
     }
-
     return shadows.join(", ");
   };
 
-  useEffect(() => {
-    // Generate star shadows when component mounts
-    setSmallStars(generateStarBoxShadow(180));
-    setMediumStars(generateStarBoxShadow(60));
-    setBigStars(generateStarBoxShadow(24));
+  const [smallStars] = useState<string>(() => generateStarBoxShadow(180));
+  const [mediumStars] = useState<string>(() => generateStarBoxShadow(60));
+  const [bigStars] = useState<string>(() => generateStarBoxShadow(24));
 
+  // Split the text by commas and trim whitespace
+  const textParts = text ? text.split(",").map((part) => part.trim()) : [];
+
+  useEffect(() => {
     // Set animation iteration based on loop prop
     document.documentElement.style.setProperty(
       "--animation-iteration",

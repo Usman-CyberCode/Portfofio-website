@@ -1,17 +1,20 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import {
-  GraduationCap,
-  Award,
   Terminal,
   MapPin,
   FileCode,
+  ArrowRight,
+  User,
 } from "lucide-react";
 import { SectionHeader } from "@/components/common/SectionHeader";
 import { GlowCard } from "@/components/ui/GlowCard";
-import { personalData, educationData, trainingData } from "@/data";
+import { Button } from "@/components/ui/Button";
+import { Magnetic } from "@/components/ui/magnetic";
+import { personalData } from "@/data";
 
 export function About() {
   const shouldReduceMotion = useReducedMotion();
@@ -200,6 +203,34 @@ export function About() {
           </GlowCard>
         </motion.div>
       </div>
+
+      {/* Action: Prominent 'Explore About Me' button opening /about in a new tab */}
+      <motion.div
+        initial={shouldReduceMotion ? {} : { opacity: 0, y: 25 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.6, delay: 0.2 }}
+        className="mt-12 text-center relative z-10"
+      >
+        <Magnetic strength={0.25}>
+          <Link
+            href="/about"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block"
+          >
+            <Button
+              variant="outline"
+              size="lg"
+              className="gap-2.5 text-xs font-mono border-white/15 hover:border-purple-500/50 hover:bg-purple-500/10 text-zinc-300 hover:text-white group px-7 py-3 rounded-full cursor-pointer"
+            >
+              <User className="h-4 w-4 text-purple-400" />
+              <span>Explore About Me</span>
+              <ArrowRight className="h-3.5 w-3.5 text-purple-400 group-hover:translate-x-1 transition-transform duration-200" />
+            </Button>
+          </Link>
+        </Magnetic>
+      </motion.div>
     </section>
   );
 }

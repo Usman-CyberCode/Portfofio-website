@@ -11,9 +11,7 @@ import {
   GitBranch,
   Braces,
   Layout,
-  Flame,
   Binary,
-  CheckCircle2,
 } from "lucide-react";
 
 interface TechItem {
