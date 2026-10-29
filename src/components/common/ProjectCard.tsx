@@ -16,7 +16,6 @@ interface ProjectCardProps {
 
 const fileMap: Record<string, string> = {
   "workspace-manager-hackathon": "workspace-manager/App.tsx",
-  "redux-counter": "redux-counter/store.ts",
   "atm-clone": "atm-clone/main.cpp",
   "personal-portfolio-website": "portfolio/src/app/page.tsx",
   "todo-list-app": "todo-app/index.js",

@@ -152,25 +152,6 @@ export const projectsData: Project[] = [
     ],
   },
   {
-    id: "redux-counter",
-    title: "Redux Counter",
-    tagline: "State Management Implementation",
-    description:
-      "A dedicated state-management application built to demonstrate unidirectional data flow, predictable store slices, and immutable state updates with Redux Toolkit.",
-    detailedDescription:
-      "Engineered to master state architecture in complex frontends. Features slice definitions, typed actions, custom numeric increment/decrement payloads, reset triggers, and architectural segregation between UI components and the centralized global store.",
-    technologies: ["Redux / Redux Toolkit", "JavaScript", "React", "State Architecture"],
-    featured: true,
-    githubUrl: "https://github.com/Usman-CyberCode/redux-counter",
-    liveUrl: undefined,
-    image: "/images/projects/redux-counter.svg",
-    metrics: [
-      { label: "Pattern", value: "Unidirectional Flow" },
-      { label: "Library", value: "Redux Toolkit" },
-      { label: "State", value: "Immutable Slices" },
-    ],
-  },
-  {
     id: "personal-portfolio-website",
     title: "Personal Portfolio Website",
     tagline: "Responsive Web Showcase",
@@ -179,7 +160,7 @@ export const projectsData: Project[] = [
     detailedDescription:
       "Designed and coded to present university computer science coursework, Saylani web development training, and frontend projects in an editorial dark aesthetic. Incorporates 3D card tilt physics, subtle particle backgrounds, and accessible responsive layouts.",
     technologies: ["Next.js", "TypeScript", "Framer Motion", "Tailwind CSS"],
-    featured: false,
+    featured: true,
     githubUrl: undefined,
     liveUrl: undefined,
     image: "/images/projects/portfolio.svg",

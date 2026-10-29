@@ -25,8 +25,8 @@ export default function AllWorkPage() {
   const categories = [
     { id: "all", label: "All Projects" },
     { id: "web", label: "Frontend & Web" },
-    { id: "state", label: "State Architecture" },
     { id: "cpp", label: "C++ Systems" },
+    { id: "apps", label: "Interactive Apps" },
   ];
 
   const filteredProjects = projectsData.filter((p) => {
@@ -37,10 +37,12 @@ export default function AllWorkPage() {
           t.includes(k)
         )
       );
-    if (activeFilter === "state")
-      return p.technologies?.some((t) => t.includes("Redux"));
     if (activeFilter === "cpp")
       return p.technologies?.some((t) => t.includes("C++"));
+    if (activeFilter === "apps")
+      return p.technologies?.some((t) =>
+        ["DOM Manipulation", "JavaScript", "HTML5"].some((k) => t.includes(k))
+      );
     return true;
   });
 

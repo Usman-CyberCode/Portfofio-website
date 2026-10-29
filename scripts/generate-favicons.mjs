@@ -1,12 +1,12 @@
 import sharp from "sharp";
 import fs from "fs";
 
-async function createFavicons() {
+async function createDarkHeroFavicons() {
   const source = "public/images/profile.jpg";
 
   // Step 1: Extract square crop with face centered (520x520)
   // Optical center of face in 768x1024 photo: left = 124, top = 85
-  const faceSquare = await sharp(source)
+  const rawFace = await sharp(source)
     .extract({ left: 124, top: 85, width: 520, height: 520 })
     .toBuffer();
 
@@ -20,23 +20,64 @@ async function createFavicons() {
     </svg>`
   );
 
-  // Resize face to 512 and apply circular mask
-  const circularFace = await sharp(faceSquare)
+  // Apply Hero Section's exact aesthetic:
+  // 1. Grayscale
+  // 2. High contrast (125%) & slightly deepened brightness (95%)
+  // 3. Circular mask
+  const heroGradedFace = await sharp(rawFace)
     .resize(size, size, { fit: "cover" })
-    .composite([{ input: circleMask, blend: "dest-in" }])
+    .grayscale()
+    .linear(1.25, -28) // contrast 1.25 and deep black floor
+    .composite([
+      { input: circleMask, blend: "dest-in" },
+    ])
     .png()
     .toBuffer();
 
-  // Dark navy background with violet/blue accent border
-  const navyBgSvg = Buffer.from(
+  // Dark background (#090812) with subtle vignette and crisp specular ring like Hero
+  const heroBackgroundWithRims = Buffer.from(
     `<svg width="${size}" height="${size}">
-      <circle cx="${radius}" cy="${radius}" r="${radius}" fill="#070c18"/>
-      <circle cx="${radius}" cy="${radius}" r="${radius - 3}" fill="none" stroke="#6366f1" stroke-width="6" stroke-opacity="0.8"/>
+      <defs>
+        <!-- Radial gradient for deep studio background -->
+        <radialGradient id="darkBg" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#141122"/>
+          <stop offset="65%" stop-color="#090812"/>
+          <stop offset="100%" stop-color="#050508"/>
+        </radialGradient>
+        <!-- Subtle bottom shadow vignette -->
+        <linearGradient id="vignette" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#000" stop-opacity="0"/>
+          <stop offset="60%" stop-color="#000" stop-opacity="0.1"/>
+          <stop offset="100%" stop-color="#000" stop-opacity="0.6"/>
+        </linearGradient>
+      </defs>
+      <!-- Base circle -->
+      <circle cx="${radius}" cy="${radius}" r="${radius}" fill="url(#darkBg)"/>
+      <!-- Inner subtle specular border -->
+      <circle cx="${radius}" cy="${radius}" r="${radius - 4}" fill="none" stroke="rgba(255,255,255,0.22)" stroke-width="4"/>
+      <!-- Subtle violet accent rim -->
+      <circle cx="${radius}" cy="${radius}" r="${radius - 1}" fill="none" stroke="rgba(147,51,234,0.4)" stroke-width="2"/>
     </svg>`
   );
 
-  const masterIconBuffer = await sharp(navyBgSvg)
-    .composite([{ input: circularFace, blend: "over" }])
+  const bottomVignetteSvg = Buffer.from(
+    `<svg width="${size}" height="${size}">
+      <defs>
+        <linearGradient id="vignette" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#000" stop-opacity="0"/>
+          <stop offset="55%" stop-color="#000" stop-opacity="0.05"/>
+          <stop offset="100%" stop-color="#000" stop-opacity="0.55"/>
+        </linearGradient>
+      </defs>
+      <circle cx="${radius}" cy="${radius}" r="${radius - 6}" fill="url(#vignette)"/>
+    </svg>`
+  );
+
+  const masterIconBuffer = await sharp(heroBackgroundWithRims)
+    .composite([
+      { input: heroGradedFace, blend: "over" },
+      { input: bottomVignetteSvg, blend: "over" },
+    ])
     .png()
     .toBuffer();
 
@@ -88,11 +129,10 @@ async function createFavicons() {
   fs.writeFileSync("public/favicon.ico", icoBuffer);
   fs.writeFileSync("src/app/favicon.ico", icoBuffer);
 
-  console.log("Favicons successfully created from profile.jpg!");
+  console.log("Dark themed Hero-matched favicon successfully generated!");
 }
 
-createFavicons().catch((err) => {
-  console.error("Error creating favicons:", err);
+createDarkHeroFavicons().catch((err) => {
+  console.error("Error creating dark hero favicons:", err);
   process.exit(1);
 });
-
